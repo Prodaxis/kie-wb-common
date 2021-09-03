@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.forms.model;
 
+import java.util.List;
+
 public interface FieldDefinition {
 
     String getId();
@@ -30,6 +32,8 @@ public interface FieldDefinition {
     String getLabel();
 
     void setLabel(String label);
+    
+    void setPlaceHolder(String placeHolder);
 
     Boolean getRequired();
 
@@ -58,4 +62,48 @@ public interface FieldDefinition {
     void setValidateOnChange(Boolean validateOnChange);
 
     void copyFrom(FieldDefinition other);
+    
+    // <Prodaxis>
+    String getMethodClassMappingParteor();
+    
+    String getKeyMappingParteor();
+    
+    void setKeyMappingParteor(String keyMappingParteor);
+    
+    String getValueMappingParteor();
+    
+    void setValueMappingParteor(String valueMappingParteor);
+    
+    Boolean isCheckValueExist();
+
+    Boolean isDoLoadInitialData();
+    
+    void setDoLoadInitialData(Boolean doLoadInitialData);
+    
+    Object getDataInitialLoaded();
+    
+    void setDataInitialLoaded(Object data);
+    
+    Boolean isAutocompletedFromDataSource();
+    
+    void setCheckExistValue(Boolean checkExistValue);
+    
+    void setAutocompletedFromDataSource(Boolean autocompletedFromDataSource);
+    
+    String getAsyncErrorKey();
+    
+    void setAsyncErrorKey(String asyncErrorKey);
+    
+    List getSelectorOptions();
+
+    void setSelectorOptions(List options);
+    
+    List getListOfValuesSelector();
+
+    void setListOfValuesSelector(List listOfValues);
+    
+    Boolean getAllowMultiSelection();
+
+	void setAllowMultiSelection(Boolean allowMultiSelection);
+    // </Prodaxis>
 }

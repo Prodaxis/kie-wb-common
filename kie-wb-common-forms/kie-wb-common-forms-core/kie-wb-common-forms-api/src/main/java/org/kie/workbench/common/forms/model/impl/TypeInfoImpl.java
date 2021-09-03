@@ -91,6 +91,8 @@ public class TypeInfoImpl implements TypeInfo {
         if (type != typeInfo.type) {
             return false;
         }
+        if(null == className && null == typeInfo.className)
+        	return true;
         return className.equals(typeInfo.className);
     }
 

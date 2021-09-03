@@ -25,7 +25,6 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public interface DataBindingEditor extends IsElement {
 
-    void init(FieldDefinition fieldDefinition,
-              Supplier<Collection<String>> bindingsSupplier,
-              Consumer<String> bindingChangeConsumer);
+    void init(FieldDefinition fieldDefinition, Supplier<Collection<String>> bindingsSupplier, Consumer<String> bindingChangeConsumer);
+    void addModelField(String property, boolean selected);
 }

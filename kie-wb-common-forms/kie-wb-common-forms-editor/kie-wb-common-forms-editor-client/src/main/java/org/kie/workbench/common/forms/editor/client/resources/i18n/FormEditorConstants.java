@@ -149,4 +149,21 @@ public interface FormEditorConstants {
     @TranslationKey(defaultValue = "")
     String ErrorMessageDisplayerViewImplCloseAndReview = "ErrorMessageDisplayerViewImpl.closeAndReview";
 
+    @TranslationKey(defaultValue = "")
+    String ReplaceLabelOrPlaceHolderNotEmpty = "ReplaceLabelOrPlaceHolder.notEmpty";
+    
+    @TranslationKey(defaultValue = "")
+    String ListOverright = "List.overright";
+    
+    @TranslationKey(defaultValue = "")
+    String BindingSuccess = "Binding.success";
+    
+    @TranslationKey(defaultValue = "")
+    String LoadLabelSuccess = "LoadLabel.success";
+    
+    @TranslationKey(defaultValue = "")
+    String CheckMethodSuccess = "CheckMethod.success";
+    
+    @TranslationKey(defaultValue = "")
+    String CheckMethodFailed = "CheckMethod.failed";
 }

@@ -94,6 +94,14 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
         this.columnMetas = columnMetas;
     }
 
+    public List getSelectorOptions(){
+    	return columnMetas;
+    }
+    
+    public List getListOfValuesSelector(){
+    	return columnMetas;
+    }
+    
     @Override
     public String getCreationForm() {
         return creationForm;

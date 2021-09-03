@@ -28,11 +28,13 @@ public interface BackendFormRenderingContextManager extends Serializable {
 
     BackendFormRenderingContext registerContext(FormDefinition rootForm,
                                                 Map<String, Object> formData,
+                                                Map<String, Object> processVariable,
                                                 ClassLoader classLoader,
                                                 FormDefinition... nestedForms);
 
     BackendFormRenderingContext registerContext(FormDefinition rootForm,
                                                 Map<String, Object> formData,
+                                                Map<String, Object> processVariable,
                                                 ClassLoader classLoader,
                                                 Map<String, String> params,
                                                 FormDefinition... nestedForms);
@@ -43,4 +45,6 @@ public interface BackendFormRenderingContextManager extends Serializable {
     BackendFormRenderingContext getContext(Long timestamp);
 
     boolean removeContext(Long timestamp);
+    
+    Object getClassInstance(long timestamp, String clazz);
 }

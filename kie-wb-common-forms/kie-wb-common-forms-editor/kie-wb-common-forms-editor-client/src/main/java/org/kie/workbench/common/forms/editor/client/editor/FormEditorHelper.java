@@ -28,12 +28,16 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.forms.dynamic.service.shared.ParteorComponentDataService;
+import org.kie.workbench.common.forms.editor.client.editor.properties.SetLabelAndParteorFieldMappingCallback;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -55,6 +59,9 @@ public class FormEditorHelper {
     private FormModelerContent content;
 
     private Map<String, FieldDefinition> availableFields = new HashMap<>();
+    
+    @Inject
+    protected Caller<ParteorComponentDataService> parteorComponentDataService;
 
     protected Map<String, Pair<EditorFieldLayoutComponent, FieldDefinition>> unbindedFields = new HashMap<>();
 
@@ -81,7 +88,7 @@ public class FormEditorHelper {
                     beanManager.destroyBean(editorProvider);
                 });
     }
-
+    
     public FormModelerContent getContent() {
         return content;
     }
@@ -98,9 +105,13 @@ public class FormEditorHelper {
             if (layoutComponent != null) {
                 FieldDefinition field = fieldManager.getDefinitionByFieldType(baseType);
                 field.setName(generateUnboundFieldName(field));
-
-                layoutComponent.init(content.getRenderingContext(),
-                                     field);
+                if(field instanceof SubFormFieldDefinition){ // Add option create form from wizard
+                	if(field.getStandaloneClassName() == null || "".equals(field.getStandaloneClassName())){
+                		String firstClassNameModel = getFormModel().getProperties().get(0).getTypeInfo().getClassName();
+                		field.setStandaloneClassName(firstClassNameModel);
+                	}
+                }
+                layoutComponent.init(content.getRenderingContext(), field);
 
                 unbindedFields.put(field.getId(),
                                    new Pair<>(layoutComponent,
@@ -128,6 +139,11 @@ public class FormEditorHelper {
                     addAvailableField(fieldManager.getDefinitionByModelProperty(modelProperty));
                 }
             });
+            String labelClazzMapping = model.getLabelClassMapping();
+            if(null != labelClazzMapping && !"".equals(labelClazzMapping)){
+            	SetLabelAndParteorFieldMappingCallback callback = new SetLabelAndParteorFieldMappingCallback(this);
+                parteorComponentDataService.call(callback, callback).setLabelAndParteorFieldMapping(labelClazzMapping);
+            }
         }
     }
 
@@ -193,7 +209,7 @@ public class FormEditorHelper {
 
                 FieldDefinition originalField = fieldToRemove;
 
-                if (fieldToRemove.getBinding() == null) {
+                if (fieldToRemove.getBinding() == null || fieldToRemove.getBinding().contains("/")) { // field remove for sub binding of class with / annotation
                     return;
                 }
 
@@ -225,8 +241,7 @@ public class FormEditorHelper {
 
     public List<String> getCompatibleFieldTypes(FieldDefinition field) {
         List<String> editorFieldTypeCodes = enabledFieldPropertiesFieldTypes.stream().map(FieldType::getTypeName).collect(Collectors.toList());
-        return fieldManager.getCompatibleFields(field).stream().filter((fieldCode) -> editorFieldTypeCodes.contains(fieldCode))
-                .collect(Collectors.toList());
+        return fieldManager.getCompatibleFields(field).stream().filter((fieldCode) -> editorFieldTypeCodes.contains(fieldCode)).collect(Collectors.toList());
     }
 
     public FieldDefinition switchToField(FieldDefinition originalField,

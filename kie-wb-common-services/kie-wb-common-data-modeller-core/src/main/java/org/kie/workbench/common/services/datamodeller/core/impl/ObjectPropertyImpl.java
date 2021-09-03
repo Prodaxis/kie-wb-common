@@ -26,6 +26,8 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
 
     private String className;
     
+    private Object value;
+    
     private String bag;
     
     private boolean multiple;
@@ -79,6 +81,16 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
     }
 
     @Override
+    public Object getValue() {
+		return value;
+	}
+
+    @Override
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
+	@Override
     public String getBag() {
         return bag;
     }

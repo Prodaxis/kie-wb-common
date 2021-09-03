@@ -77,6 +77,14 @@ public class StringListBoxFieldDefinition extends ListBoxBaseDefinition<StringSe
         this.defaultValue = defaultValue;
     }
 
+    public List getSelectorOptions(){
+    	return options;
+    }
+
+    public void setSelectorOptions(List options){
+    	this.options = options;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {

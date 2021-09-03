@@ -40,12 +40,13 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.util.B
 public class ClassFieldInspector {
 
     private final Map<String, FieldInfo> fieldTypesFieldInfo = new HashMap<>();
+    private final Map<String, Object> inaccessibleFields = new HashMap<>();
 
     public ClassFieldInspector(final Class<?> clazz) {
         //Handle fields
         final List<Field> fields = new ArrayList<>(getAllFields(clazz).values());
         final List<Field> declaredFields = Arrays.asList(clazz.getDeclaredFields());
-        final Map<String, Field> inaccessibleFields = new HashMap<>();
+        
 
         for (Field field : fields) {
             if (BlackLists.isClassMethodBlackListed(clazz,
@@ -122,7 +123,7 @@ public class ClassFieldInspector {
                                                                          getNames(fields),
                                                                          getNames(declaredFields));
 
-                        Field inaccessibleField = inaccessibleFields.get(methodName);
+                        Field inaccessibleField = (Field) inaccessibleFields.get(methodName);
 
                         Type genericType = method.getGenericReturnType();
                         Class<?> type = method.getReturnType();
@@ -198,8 +199,12 @@ public class ClassFieldInspector {
     public Map<String, FieldInfo> getFieldTypesFieldInfo() {
         return this.fieldTypesFieldInfo;
     }
+    
+    public Map<String, Object> getInaccessibleFields() {
+		return inaccessibleFields;
+	}
 
-    //class.getDeclaredField(String) doesn't walk the inheritance tree; this does
+	//class.getDeclaredField(String) doesn't walk the inheritance tree; this does
     private Map<String, Field> getAllFields(Class<?> type) {
         Map<String, Field> fields = new HashMap<>();
         for (Class<?> c = type; c != null; c = c.getSuperclass()) {
@@ -261,7 +266,7 @@ public class ClassFieldInspector {
             return annotations;
         }
 
-        @Override
+		@Override
         public boolean equals(Object o) {
             if (this == o) {
                 return true;

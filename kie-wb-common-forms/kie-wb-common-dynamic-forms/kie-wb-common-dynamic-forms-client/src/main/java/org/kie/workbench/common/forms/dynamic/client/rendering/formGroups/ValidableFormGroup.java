@@ -23,4 +23,6 @@ public interface ValidableFormGroup extends FormGroup {
     void showError(String message);
 
     void showWarning(String message);
+    
+    void showSuccess(String message);
 }

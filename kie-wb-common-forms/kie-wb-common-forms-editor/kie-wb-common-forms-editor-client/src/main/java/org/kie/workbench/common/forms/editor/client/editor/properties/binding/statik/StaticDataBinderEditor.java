@@ -96,4 +96,10 @@ public class StaticDataBinderEditor implements DataBindingEditor,
     public HTMLElement getElement() {
         return view.getElement();
     }
+
+	@Override
+	public void addModelField(String property, boolean selected) {
+		view.addModelField(property,
+				selected);
+	}
 }

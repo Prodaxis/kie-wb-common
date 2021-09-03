@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.forms.data.modeller.service.impl.ext.dmo.util;
 
+import static org.kie.workbench.common.forms.data.modeller.service.impl.ext.util.ModelReaderUtil.LABEL_ANNOTATION;
+import static org.kie.workbench.common.forms.data.modeller.service.impl.ext.util.ModelReaderUtil.LABEL_ANNOTATION_VALUE_PARAM;
+
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,9 +53,6 @@ import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.workbench.common.forms.data.modeller.service.impl.ext.util.ModelReaderUtil.LABEL_ANNOTATION;
-import static org.kie.workbench.common.forms.data.modeller.service.impl.ext.util.ModelReaderUtil.LABEL_ANNOTATION_VALUE_PARAM;
-
 public class DMOModelResolver {
 
     private static final Logger logger = LoggerFactory.getLogger(DMOModelResolver.class);
@@ -82,7 +83,7 @@ public class DMOModelResolver {
         if (typeSource.equals(TypeSource.JAVA_DEPENDENCY)) {
             formModel.setSource(Source.EXTERNAL);
         }
-
+        formModel.setLabelClassMapping(getLabelClassMappingFromModel(oracle, modelType));
         ModelField[] fields = oracle.getModuleModelFields().get(modelType);
 
         Map<String, Set<Annotation>> fieldAnnotations = oracle.getModuleTypeFieldsAnnotations().getOrDefault(modelType, Collections.emptyMap());
@@ -94,9 +95,11 @@ public class DMOModelResolver {
             if (!FieldAccessorsAndMutators.BOTH.equals(modelField.getAccessorsAndMutators())) {
                 return;
             }
-
+            if(modelField.getName().equals(ModelField.LABEL_MAPPING_CLASS_KEY) && String.class.getName().equals(modelField.getClassName())){ // is static field for label class mapping
+            	return;
+            }
+            
             Set<Annotation> annotations = Optional.ofNullable(fieldAnnotations.get(modelField.getName())).orElse(Collections.EMPTY_SET);
-
             if (!isValidModelProperty(modelField, annotations)) {
                 return;
             }
@@ -109,7 +112,7 @@ public class DMOModelResolver {
                 if (isList) {
                     fieldType = oracle.getModuleFieldParametersType().get(modelType + "#" + modelField.getName());
                 }
-
+                
                 TypeKind typeKind = isEnum ? TypeKind.ENUM : FormModelPropertiesUtil.isBaseType(fieldType) ? TypeKind.BASE : TypeKind.OBJECT;
 
                 TypeInfo info = new TypeInfoImpl(typeKind, fieldType, isList);
@@ -188,6 +191,23 @@ public class DMOModelResolver {
         return TypeSource.JAVA_PROJECT.equals(source);
     }
 
+    private static String getLabelClassMappingFromModel(ModuleDataModelOracle oracle, final String modelType){
+    	try {
+    		Map<String, Map<String, Object>> staticFields = oracle.getStaticFields();
+    		Map<String, Object> fieldMap = staticFields.get(modelType);
+	    	if(null != fieldMap){
+	    		Object fieldObject = fieldMap.get(ModelField.LABEL_MAPPING_CLASS_KEY);
+	    		if(null != fieldObject){
+	    			Field fieldValue = (Field) fieldObject;
+	    			return (String) fieldValue.get(null);
+	    		}
+	    	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
     private static int compare(DataObjectFormModel o1, DataObjectFormModel o2) {
         if (!o1.getSource().equals(o2.getSource())) {
             if (o1.getSource().equals(Source.INTERNAL)) {

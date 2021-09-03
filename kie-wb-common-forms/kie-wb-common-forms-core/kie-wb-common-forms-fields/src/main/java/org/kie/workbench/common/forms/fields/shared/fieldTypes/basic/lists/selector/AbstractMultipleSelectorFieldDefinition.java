@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.sele
 import java.util.List;
 
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
@@ -30,29 +31,36 @@ public abstract class AbstractMultipleSelectorFieldDefinition<TYPE> extends Abst
 
     public static MultipleSelectorFieldType FIELD_TYPE = new MultipleSelectorFieldType();
 
-    @FormField(
-            labelKey = "maxDropdownElements",
-            afterElement = "label"
-    )
+    @SkipFormField
     private Integer maxDropdownElements = 10;
 
-    @FormField(
-            labelKey = "maxElementsOnTitle",
-            afterElement = "maxDropdownElements"
-    )
+    @SkipFormField
     private Integer maxElementsOnTitle = 5;
 
-    @FormField(
-            labelKey = "allowFilter",
-            afterElement = "maxElementsOnTitle"
-    )
+    @SkipFormField
     private Boolean allowFilter = true;
 
-    @FormField(
-            labelKey = "allowClearSelection",
-            afterElement = "allowFilter"
-    )
+    @SkipFormField
     private Boolean allowClearSelection = true;
+    
+    @FormField(
+            labelKey = "allowMultiSelection",
+            afterElement = "listOfValues"
+    )
+    private Boolean allowMultiSelection = Boolean.FALSE;
+    
+    @FormField(
+            labelKey = "autocompletedFromDataSource",
+            afterElement = "checkExistValue"
+    )
+    private Boolean autocompletedFromDataSource = Boolean.FALSE;
+    
+    
+    @FormField(
+            labelKey = "doLoadInitialData",
+            afterElement = "valueMappingParteor"
+    )
+    private Boolean doLoadInitialData = Boolean.FALSE;
 
     public AbstractMultipleSelectorFieldDefinition(String className) {
         super(className);
@@ -95,7 +103,43 @@ public abstract class AbstractMultipleSelectorFieldDefinition<TYPE> extends Abst
         this.allowClearSelection = allowClearSelection;
     }
 
-    public abstract List<TYPE> getListOfValues();
+    public Boolean getDoLoadInitialData() {
+		return doLoadInitialData;
+	}
+
+	public Boolean getAutocompletedFromDataSource() {
+		return autocompletedFromDataSource;
+	}
+
+	@Override
+    public Boolean isDoLoadInitialData() {
+        return doLoadInitialData;
+    }
+
+    @Override
+    public void setDoLoadInitialData(Boolean doLoadInitialData) {
+        this.doLoadInitialData = doLoadInitialData;
+    }
+    
+    @Override
+    public Boolean isAutocompletedFromDataSource() {
+        return autocompletedFromDataSource;
+    }
+
+    @Override
+    public void setAutocompletedFromDataSource(Boolean autocompletedFromDataSource) {
+        this.autocompletedFromDataSource = autocompletedFromDataSource;
+    }
+    
+    public Boolean getAllowMultiSelection() {
+		return allowMultiSelection;
+	}
+
+	public void setAllowMultiSelection(Boolean allowMultiSelection) {
+		this.allowMultiSelection = allowMultiSelection;
+	}
+
+	public abstract List<TYPE> getListOfValues();
 
     public abstract void setListOfValues(List<TYPE> listOfValues);
 

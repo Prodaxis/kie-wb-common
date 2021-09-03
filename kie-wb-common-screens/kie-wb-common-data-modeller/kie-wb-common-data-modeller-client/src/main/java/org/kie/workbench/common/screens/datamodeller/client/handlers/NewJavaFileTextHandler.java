@@ -24,9 +24,12 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -68,19 +71,28 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
 
     @Inject
     private DomainHandlerRegistry domainHandlerRegistry;
+    
+    private TextBox classParteorBinding = new TextBox();
+    
+    private TextBox labelClassParteorMapping = new TextBox();
 
     @PostConstruct
     private void setupExtensions() {
-
+    	// intial ui
+    	classParteorBinding.getElement().getStyle().setMarginBottom(15, Unit.PX);
+    	labelClassParteorMapping.getElement().getStyle().setMarginBottom(15, Unit.PX);
+    	// add to extensions
+    	extensions.add(Pair.newPair(Constants.INSTANCE.classParteorBinding(), classParteorBinding));
+    	extensions.add(Pair.newPair(Constants.INSTANCE.labelClassParteorBinding(), labelClassParteorMapping));
         ResourceOptions options;
         for (DomainHandler handler : domainHandlerRegistry.getDomainHandlers()) {
             options = handler.getResourceOptions(false);
             if (options != null) {
                 resourceOptions.add(options);
-                extensions.add(new Pair<String, Widget>(handler.getName(),
-                                                        options.getWidget()));
+                extensions.add(new Pair<String, Widget>(handler.getName(), options.getWidget()));
             }
         }
+       
     }
 
     @Override
@@ -99,9 +111,7 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create(final org.guvnor.common.services.project.model.Package pkg,
-                       final String baseFileName,
-                       final NewResourcePresenter presenter) {
+    public void create(final org.guvnor.common.services.project.model.Package pkg, final String baseFileName, final NewResourcePresenter presenter) {
 
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
 
@@ -109,14 +119,9 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
         for (ResourceOptions options : resourceOptions) {
             params.putAll(options.getOptions());
         }
-
-        dataModelerService.call(getSuccessCallback(presenter),
-                                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).createJavaFile(
-                pkg.getPackageMainSrcPath(),
-                buildFileName(baseFileName,
-                              resourceType),
-                "",
-                params);
+        params.put(DataModelerService.PARTEOR_CLASS_BINDING_KEY, classParteorBinding.getText());
+        params.put(DataModelerService.LABEL_MAPPING_CLASS_PARTEOR_KEY, labelClassParteorMapping.getText());
+        dataModelerService.call(getSuccessCallback(presenter), new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).createJavaFile(pkg.getPackageMainSrcPath(), buildFileName(baseFileName, resourceType), "", params);
     }
 
     @Override

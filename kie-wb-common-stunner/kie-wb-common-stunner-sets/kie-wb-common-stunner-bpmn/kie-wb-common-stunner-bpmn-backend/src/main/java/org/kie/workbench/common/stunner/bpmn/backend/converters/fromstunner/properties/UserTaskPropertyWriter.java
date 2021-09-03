@@ -176,6 +176,10 @@ public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWrit
         Scripts.setOnEntryAction(task, onEntryAction);
     }
 
+    public void setOnValidationAction(String value) {
+    	CustomElement.onValidationAction.of(baseElement).set(value);
+    }
+    
     public void setOnExitAction(OnExitAction onExitAction) {
         Scripts.setOnExitAction(task, onExitAction);
     }

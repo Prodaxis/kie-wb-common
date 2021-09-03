@@ -85,6 +85,10 @@ public class MapModelBindingHelper {
                             Character.class);
         basicProperties.put(Date.class.getName(),
                             Date.class);
+        basicProperties.put(java.sql.Date.class.getName(),
+        		java.sql.Date.class);
+        basicProperties.put(java.sql.Timestamp.class.getName(),
+        		java.sql.Timestamp.class);
         basicProperties.put(BigInteger.class.getName(),
                             BigInteger.class);
         basicProperties.put(BigDecimal.class.getName(),

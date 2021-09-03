@@ -36,4 +36,6 @@ public interface TypeInfo {
      * TODO: now only multiple types supported are List
      */
     boolean isMultiple();
+    
+    void setMultiple(boolean multiple);
 }

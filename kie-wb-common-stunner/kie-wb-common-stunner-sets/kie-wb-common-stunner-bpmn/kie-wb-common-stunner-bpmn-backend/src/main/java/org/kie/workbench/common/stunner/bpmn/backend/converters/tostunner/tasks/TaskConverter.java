@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceExecutionMode;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnValidationAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Subject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
@@ -81,6 +82,7 @@ public class TaskConverter extends BaseTaskConverter<UserTask, UserTaskExecution
                                         new MultipleInstanceDataOutput(p.getDataOutput()),
                                         new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
                                         new OnEntryAction(p.getOnEntryAction()),
+                                        new OnValidationAction(p.getOnValidationAction()),
                                         new OnExitAction(p.getOnExitAction()),
                                         new Content(p.getContent()),
                                         new SLADueDate(p.getSLADueDate()));

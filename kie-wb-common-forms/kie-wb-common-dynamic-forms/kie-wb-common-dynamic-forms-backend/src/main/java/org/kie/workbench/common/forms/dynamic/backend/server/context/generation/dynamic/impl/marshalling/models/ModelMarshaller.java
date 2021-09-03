@@ -33,6 +33,8 @@ import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.prodaxis.solar.util.BusinessComponentScriptHelper;
+
 public class ModelMarshaller {
 
     private static final Logger logger = LoggerFactory.getLogger(ModelMarshaller.class);
@@ -124,6 +126,9 @@ public class ModelMarshaller {
     private void writeValue(String property, Object value) {
         try {
             if (PropertyUtils.getPropertyDescriptor(model, property) != null) {
+            	if(null == value && BusinessComponentScriptHelper.getInstance().isSQLDateTimeType(model, property)){
+            		return;
+            	}
                 BeanUtils.setProperty(model, property, value);
             }
         } catch (Exception e) {

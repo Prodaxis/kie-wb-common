@@ -150,6 +150,22 @@ public class GenerationTools {
         return name;
     }
 
+    public String toValueVar(Object value) {
+    	if(null == value)
+    		return "";
+    	if (value instanceof String) {
+			return " = " + "\"" +  value + "\"";
+		}else if(value instanceof Integer){
+			return " = " + "\"" +  value + "\"";
+		}else if(value instanceof Double){
+			return " = " +  value + ".0";
+		}else if(value instanceof Long){
+			return " = " +  value + "L";
+		}else{
+			return " = " + "\"" +  value + "\"";
+		}
+    }
+
     public String getFilePath(String packageName, String simpleClassName, String extension) {
         if (packageName != null) {
             packageName = "/" + packageName.replace(".", "/");
@@ -781,6 +797,14 @@ public class GenerationTools {
         List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
         if (dataObject != null && !dataObject.getProperties().isEmpty()) {
             sortedProperties.addAll(dataObject.getProperties());
+        }
+        return sortByName(sortedProperties);
+    }
+    
+    public List<ObjectProperty> sortedStaticProperties(DataObject dataObject) {
+        List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
+        if (dataObject != null && !dataObject.getStaticProperties().isEmpty()) {
+            sortedProperties.addAll(dataObject.getStaticProperties());
         }
         return sortByName(sortedProperties);
     }

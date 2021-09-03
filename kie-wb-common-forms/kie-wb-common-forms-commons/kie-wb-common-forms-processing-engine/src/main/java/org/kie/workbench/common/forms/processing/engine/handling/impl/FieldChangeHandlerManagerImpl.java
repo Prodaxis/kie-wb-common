@@ -25,112 +25,107 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.common.client.api.Assert;
+import org.kie.workbench.common.forms.processing.engine.handling.DynamicFieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
+import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 
 @Dependent
 public class FieldChangeHandlerManagerImpl implements FieldChangeHandlerManager {
 
-    private FormValidator validator;
+	private FormValidator validator;
+	private Map<String, FieldChangeProcessor> fieldExecutors = new HashMap<>();
+	private List<FieldChangeHandler> defaultChangeHandlers = new ArrayList<>();
+	DynamicFieldChangeHandler dynamicFieldLoadingHandler;
 
-    private Map<String, FieldChangeProcessor> fieldExecutors = new HashMap<>();
-    private List<FieldChangeHandler> defaultChangeHandlers = new ArrayList<>();
+	@Override
+	public void setValidator(FormValidator validator) {
+		this.validator = validator;
+	}
 
-    @Override
-    public void setValidator(FormValidator validator) {
-        this.validator = validator;
-    }
+	@Override
+	public void registerField(FormField formField) {
+		fieldExecutors.put(formField.getFieldName(), new FieldChangeProcessor(formField));
+	}
 
-    @Override
-    public void registerField(FormField formField) {
-        fieldExecutors.put(formField.getFieldName(),
-                           new FieldChangeProcessor(formField));
-    }
+	@Override
+	public void addFieldChangeHandler(FieldChangeHandler changeHandler) {
+		defaultChangeHandlers.add(changeHandler);
+	}
+	
+	@Override
+	public void setFieldReloadingHandler(DynamicFieldChangeHandler changeHandler) {
+		if(null != changeHandler){
+			dynamicFieldLoadingHandler = changeHandler;
+		}
+	}
 
-    @Override
-    public void addFieldChangeHandler(FieldChangeHandler changeHandler) {
-        defaultChangeHandlers.add(changeHandler);
-    }
+	@Override
+	public void addFieldChangeHandler(String fieldName, FieldChangeHandler changeHandler) {
+		Assert.notNull("FieldName cannot be null", fieldName);
+		Assert.notNull("FieldChangeHandler cannot be null", changeHandler);
 
-    @Override
-    public void addFieldChangeHandler(String fieldName,
-                                      FieldChangeHandler changeHandler) {
-        Assert.notNull("FieldName cannot be null",
-                       fieldName);
-        Assert.notNull("FieldChangeHandler cannot be null",
-                       changeHandler);
+		FieldChangeProcessor executor = fieldExecutors.get(fieldName);
 
-        FieldChangeProcessor executor = fieldExecutors.get(fieldName);
+		if (executor != null) {
+			executor.addFieldChangeHandler(changeHandler);
+		}
+	}
 
-        if (executor != null) {
-            executor.addFieldChangeHandler(changeHandler);
-        }
-    }
+	@Override
+	public void processFieldChange(String fieldName, Object newValue, Object model) {
+		validateAndNotify(fieldName, newValue, model, true);
+	}
 
-    @Override
-    public void processFieldChange(String fieldName,
-                                   Object newValue,
-                                   Object model) {
-        validateAndNotify(fieldName,
-                          newValue,
-                          model,
-                          true);
-    }
+	@Override
+	public void notifyFieldChange(String fieldName, Object newValue) {
+		validateAndNotify(fieldName, newValue, null, false);
+	}
+	
+	@Override
+	public void notifyFieldReLoading(FormHandler formHandler, FormField field, HashMap formData) {
+		doReloading(formHandler, dynamicFieldLoadingHandler, field, formData);
+	}
 
-    @Override
-    public void notifyFieldChange(String fieldName,
-                                  Object newValue) {
-        validateAndNotify(fieldName,
-                          newValue,
-                          null,
-                          false);
-    }
+	protected void validateAndNotify(String fieldName, Object newValue, Object model, boolean validate) {
+		assert fieldName != null;
 
-    protected void validateAndNotify(String fieldName,
-                                     Object newValue,
-                                     Object model,
-                                     boolean validate) {
-        assert fieldName != null;
+		String realFieldName = fieldName;
 
-        String realFieldName = fieldName;
+		if (realFieldName.indexOf(".") != -1) {
+			realFieldName = realFieldName.substring(0, realFieldName.indexOf("."));
+		}
 
-        if (realFieldName.indexOf(".") != -1) {
-            realFieldName = realFieldName.substring(0,
-                                                    realFieldName.indexOf("."));
-        }
+		FieldChangeProcessor executor = fieldExecutors.get(realFieldName);
 
-        FieldChangeProcessor executor = fieldExecutors.get(realFieldName);
+		if (executor != null) {
+			if (validate && executor.isRequiresValidation()) {
+				if (validator != null && !validator.validate(executor.getField(), model)) {
+					return;
+				}
+			}
+			doProcess(executor.getChangeHandlers(), fieldName, newValue);
+			doProcess(defaultChangeHandlers, fieldName, newValue);
+		}
+	}
 
-        if (executor != null) {
-            if (validate && executor.isRequiresValidation()) {
-                if (validator != null && !validator.validate(executor.getField(),
-                                                             model)) {
-                    return;
-                }
-            }
-            doProcess(executor.getChangeHandlers(),
-                      fieldName,
-                      newValue);
-            doProcess(defaultChangeHandlers,
-                      fieldName,
-                      newValue);
-        }
-    }
+	protected void doProcess(Collection<FieldChangeHandler> handlers, String fieldName, Object newValue) {
+		for (FieldChangeHandler handler : handlers) {
+			handler.onFieldChange(fieldName, newValue);
+		}
+	}
 
-    protected void doProcess(Collection<FieldChangeHandler> handlers,
-                             String fieldName,
-                             Object newValue) {
-        for (FieldChangeHandler handler : handlers) {
-            handler.onFieldChange(fieldName,
-                                  newValue);
-        }
-    }
+	protected void doReloading(FormHandler formHandler, DynamicFieldChangeHandler handler, FormField field, HashMap formData) {
+		if(null != handler){
+			handler.onFieldChange(formHandler, field, formData);
+		}
+	}
 
-    @Override
-    public void clear() {
-        fieldExecutors.clear();
-        defaultChangeHandlers.clear();
-    }
+	@Override
+	public void clear() {
+		fieldExecutors.clear();
+		defaultChangeHandlers.clear();
+	}
 }

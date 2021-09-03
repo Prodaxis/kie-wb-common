@@ -39,5 +39,8 @@ public interface ObjectProperty extends HasName, HasClassName, HasAnnotations, H
     int getModifiers();
 
     void setClassName( String className );
-
+    
+    public Object getValue();
+    
+    public void setValue(Object value);
 }

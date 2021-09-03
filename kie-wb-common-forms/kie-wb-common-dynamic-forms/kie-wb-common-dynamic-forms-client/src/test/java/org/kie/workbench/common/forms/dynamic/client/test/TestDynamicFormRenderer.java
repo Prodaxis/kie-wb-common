@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.dynamic.client.test;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
@@ -26,9 +27,9 @@ public class TestDynamicFormRenderer extends DynamicFormRenderer {
 
     public TestDynamicFormRenderer(DynamicFormRendererView view,
                                    FormHandlerGeneratorManager handlerGeneratorManager,
-                                   DynamicFormModelGenerator dynamicFormModelGenerator) {
+                                   DynamicFormModelGenerator dynamicFormModelGenerator, TranslationService translationService) {
         super(view,
               handlerGeneratorManager,
-              dynamicFormModelGenerator);
+              dynamicFormModelGenerator, translationService);
     }
 }

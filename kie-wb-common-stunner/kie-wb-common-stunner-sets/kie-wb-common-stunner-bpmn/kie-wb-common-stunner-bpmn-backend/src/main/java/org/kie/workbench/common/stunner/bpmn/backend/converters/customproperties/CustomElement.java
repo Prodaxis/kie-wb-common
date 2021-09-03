@@ -62,6 +62,8 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<String> caseIdPrefix = new StringElement("customCaseIdPrefix", "");
     public static final MetadataTypeDefinition<String> caseRole = new StringElement("customCaseRoles", "");
     public static final MetadataTypeDefinition<String> slaDueDate = new StringElement("customSLADueDate", "");
+    public static final MetadataTypeDefinition<String> executionTarget = new StringElement("executionTarget", "");
+    public static final MetadataTypeDefinition<String> onValidationAction = new StringElement("onValidationAction", "");
     public static final GlobalVariablesElement globalVariables = new GlobalVariablesElement("customGlobalVariables");
     public static final MetaDataAttributesElement metaDataAttributes = new MetaDataAttributesElement("customMetaDataAttributes");
     public static final MetadataTypeDefinition<Boolean> isCase = new BooleanElement("case", Boolean.FALSE);

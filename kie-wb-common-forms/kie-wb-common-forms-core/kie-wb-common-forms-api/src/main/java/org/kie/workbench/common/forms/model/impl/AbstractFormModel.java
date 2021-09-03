@@ -74,4 +74,8 @@ public abstract class AbstractFormModel implements FormModel {
 
         properties.add(property);
     }
+    
+    public String getLabelClassMapping() {
+		return null;
+	}
 }

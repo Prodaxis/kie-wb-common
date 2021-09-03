@@ -26,6 +26,8 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
     protected String namespace;
 
     protected Map<String, FormDefinition> availableForms = new HashMap<String, FormDefinition>();
+    
+    protected Map<String, Object> nodeRenderingSettingsMetaData = new HashMap<String, Object>(); // metadata of node on diagramme
 
     protected String rootFormId;
 
@@ -85,8 +87,18 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
     public void setRenderMode(RenderMode renderMode) {
         this.renderMode = renderMode;
     }
+    
+    @Override
+	public Map<String, Object> getNodeRenderingSettingsMetaData() {
+		return nodeRenderingSettingsMetaData;
+	}
 
     @Override
+	public void setNodeRenderingSettingsMetaData(Map<String, Object> nodeRenderingSettingsMetaData) {
+		this.nodeRenderingSettingsMetaData = nodeRenderingSettingsMetaData;
+	}
+
+	@Override
     public Map<String, FormDefinition> getAvailableForms() {
         return availableForms;
     }

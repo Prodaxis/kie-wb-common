@@ -46,6 +46,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private final List<String> superTypes;
     private final Set<Annotation> annotations = new LinkedHashSet<Annotation>();
     private final Map<String, Set<Annotation>> fieldAnnotations = new HashMap<String, Set<Annotation>>();
+    private final Map<String, Map<String, Object>> staticFields = new HashMap<>();
 
     private final Map<String, FactBuilder> fieldFactBuilders = new HashMap<String, FactBuilder>();
 
@@ -82,6 +83,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
         oracle.addModuleSuperTypes(buildSuperTypes());
         oracle.addModuleTypeAnnotations(buildTypeAnnotations());
         oracle.addModuleTypeFieldsAnnotations(buildTypeFieldsAnnotations());
+        oracle.addStaticFields(staticFields);
     }
 
     private List<String> getSuperTypes(final Class<?> clazz) {
@@ -107,8 +109,8 @@ public class ClassFactBuilder extends BaseFactBuilder {
         //- FIELDS need a getter ("getXXX", "isXXX") or setter ("setXXX") or are public properties
         //- METHODS are any accessor that does not have a getter or setter
         final ClassFieldInspector inspector = new ClassFieldInspector(clazz);
+        staticFields.put(clazz.getName(), inspector.getInaccessibleFields());
         final Set<String> fieldNames = inspector.getFieldNames();
-
         for (final String fieldName : fieldNames) {
             final ClassFieldInspector.FieldInfo f = inspector.getFieldTypesFieldInfo().get(fieldName);
             addParametricTypeForField(factType,

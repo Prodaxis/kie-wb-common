@@ -84,11 +84,38 @@ public interface FormRenderingConstants {
     String BooleanEditableColumnGeneratorYes = "BooleanEditableColumnGenerator.yes";
 
     @TranslationKey(defaultValue = "")
-    String BooleanEditableColumnGeneratorNo= "BooleanEditableColumnGenerator.no";
+    String BooleanEditableColumnGeneratorNo = "BooleanEditableColumnGenerator.no";
 
     @TranslationKey(defaultValue = "")
-    String DatePickerWrapperViewImplShowDateTooltip= "DatePickerWrapperViewImpl.showDateTooltip";
+    String DatePickerWrapperViewImplShowDateTooltip = "DatePickerWrapperViewImpl.showDateTooltip";
 
     @TranslationKey(defaultValue = "")
-    String DatePickerWrapperViewImplClearDateTooltip= "DatePickerWrapperViewImpl.clearDateTooltip";
+    String DatePickerWrapperViewImplClearDateTooltip = "DatePickerWrapperViewImpl.clearDateTooltip";
+    
+    @TranslationKey(defaultValue = "")
+    String FieldPropertiesCheckExistValue = "FieldProperties.checkExistValue";
+    
+    @TranslationKey(defaultValue = "")
+    String FieldPropertiesMethodClassMappingParteor = "FieldProperties.methodClassMappingParteor";
+    
+    @TranslationKey(defaultValue = "")
+    String FieldPropertiesKeyMappingParteor = "FieldProperties.keyMappingParteor";
+    
+    @TranslationKey(defaultValue = "")
+    String FieldPropertiesDoLoadInitialData = "FieldProperties.doLoadInitialData";
+    
+    @TranslationKey(defaultValue = "")
+    String FieldPropertiesAutocompletedFromDataSource = "FieldProperties.autocompletedFromDataSource";
+    
+    @TranslationKey(defaultValue = "")
+    String ParteorRequireForVerify = "Parteor.requireForVerify";
+    
+    @TranslationKey(defaultValue = "")
+    String RequireMethodClassMappingParteor = "Parteor.requireMethodClassMappingParteor";
+    
+    @TranslationKey(defaultValue = "")
+    String RequireKeyMappingFieldForLoadParteor = "Parteor.requireKeyMappingFieldForLoad";
+    
+    @TranslationKey(defaultValue = "")
+    String DataBindingFieldFormatError = "Parteor.dataBindingFieldFormatError";
 }

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.processing.engine.handling;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -25,6 +26,10 @@ public interface FormField {
     String getFieldName();
 
     String getFieldBinding();
+    
+    String getMethodClassMappingParteor();
+    
+    String getKeyMappingParteor();
 
     boolean isValidateOnChange();
 
@@ -35,12 +40,36 @@ public interface FormField {
     void setReadOnly(boolean readOnly);
 
     boolean isRequired();
+    
+    boolean isCheckValueExist();
+    
+    public List getSelectorOptions();
+
+    public void setSelectorOptions(List options);
+    
+    public List getListOfValuesSelector();
+
+    public void setListOfValuesSelector(List listOfValues);
+    
+    boolean isDoLoadInitialData();
+    
+    boolean isAutocompletedFromDataSource();
 
     void clearError();
 
     void showError(String error);
 
     void showWarning(String warning);
+    
+    void showSuccess(String success);
+    
+    String getAsyncErrorKey();
+    
+    void setAsyncErrorKey(String asyncErrorKey);
+    
+    void setLabel(String label);
+    
+    void setPlaceHolder(String placeHolder);
 
     FieldContainer getContainer();
 
@@ -53,4 +82,6 @@ public interface FormField {
     Collection<FieldChangeListener> getChangeListeners();
 
     Collection<CustomFieldValidator> getCustomValidators();
+    
+    Object getFieldDefinition();
 }

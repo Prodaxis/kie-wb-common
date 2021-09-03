@@ -26,9 +26,11 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ExecutionTarget;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
@@ -61,14 +63,17 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
     private AdHocAutostart adHocAutostart;
 
     @Property
-    @FormField(afterElement = "adHocAutostart",
-            settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")})
+    @FormField(afterElement = "adHocAutostart", settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")})
     @Valid
     private OnEntryAction onEntryAction;
 
     @Property
-    @FormField(afterElement = "onEntryAction",
-            settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")})
+    @FormField(type = TextAreaFieldType.class, afterElement = "onEntryAction", helpMessageKey = "helpMessage")
+    @Valid
+    private ExecutionTarget executionTarget;
+    
+    @Property
+    @FormField(afterElement = "executionTarget", settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")})
     @Valid
     private OnExitAction onExitAction;
 
@@ -81,10 +86,9 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
         this(new TaskName("Service Task"),
              new IsAsync(),
              new AdHocAutostart(),
-             new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
-                                                                                      ""))),
-             new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
-                                                                                     ""))),
+             new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))),
+             new ExecutionTarget(),
+             new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",""))),
              new SLADueDate());
     }
 
@@ -92,12 +96,14 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
                                    final @MapsTo("isAsync") IsAsync isAsync,
                                    final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                    final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
+                                   final @MapsTo("executionTarget") ExecutionTarget executionTarget,
                                    final @MapsTo("onExitAction") OnExitAction onExitAction,
                                    final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.taskName = taskName;
         this.isAsync = isAsync;
         this.adHocAutostart = adHocAutostart;
         this.onEntryAction = onEntryAction;
+        this.executionTarget = executionTarget;
         this.onExitAction = onExitAction;
         this.slaDueDate = slaDueDate;
     }
@@ -149,13 +155,22 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
     public void setSlaDueDate(SLADueDate slaDueDate) {
         this.slaDueDate = slaDueDate;
     }
+      
+    public ExecutionTarget getExecutionTarget() {
+		return executionTarget;
+	}
 
-    @Override
+	public void setExecutionTarget(ExecutionTarget executionTarget) {
+		this.executionTarget = executionTarget;
+	}
+
+	@Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(taskName),
                                          Objects.hashCode(isAsync),
                                          Objects.hashCode(adHocAutostart),
                                          Objects.hashCode(onEntryAction),
+                                         Objects.hashCode(executionTarget),
                                          Objects.hashCode(onExitAction),
                                          Objects.hashCode(slaDueDate));
     }
@@ -168,6 +183,7 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
                     Objects.equals(isAsync, other.isAsync) &&
                     Objects.equals(adHocAutostart, other.adHocAutostart) &&
                     Objects.equals(onEntryAction, other.onEntryAction) &&
+                    Objects.equals(executionTarget, other.executionTarget) &&
                     Objects.equals(onExitAction, other.onExitAction) &&
                     Objects.equals(slaDueDate, other.slaDueDate);
         }

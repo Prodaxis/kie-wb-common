@@ -28,6 +28,7 @@ import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.layout.La
 import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutColumnDefinition;
 import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutSettings;
 import org.kie.workbench.common.forms.commons.shared.layout.impl.StaticFormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNestedForm;
@@ -47,6 +48,10 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+
+import com.prodaxis.solar.components.ComponentDescriptor;
+import com.prodaxis.solar.components.ComponentManager;
+import com.prodaxis.solar.components.IComponentFieldDescriptor;
 
 public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFormGeneratorService<SOURCE> {
 
@@ -299,7 +304,8 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
         formModel.getProperties().forEach(property -> {
             form.getFields().add(fieldManager.getDefinitionByModelProperty(property));
         });
-
+        //set label for all fields
+        setLabelForAllField(formModel, form);
         List<FieldDefinition> fieldsToRemove = form.getFields().stream()
                 .filter(field -> !processFieldDefinition(field, context))
                 .collect(Collectors.toList());
@@ -325,5 +331,29 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
 
     protected FormDefinition findFormDefinitionForModelType(String modelType, GenerationContext<SOURCE> context) {
         return context.getContextForms().get(modelType);
+    }
+    
+    private void setLabelForAllField(JavaFormModel formModel, FormDefinition form){
+    	try {
+    		DataObjectFormModel model = (DataObjectFormModel) formModel;
+    		String classLabelMapping = model.getLabelClassMapping();
+    		if(null != classLabelMapping && !"".equals(classLabelMapping)){
+    			ComponentDescriptor descriptor = ComponentManager.getInstance().getComponentDescriptor(classLabelMapping);
+    			if(null != descriptor){
+    				form.getFields().forEach(fieldDefinition -> {
+    					IComponentFieldDescriptor fieldDescriptor = descriptor.getField(descriptor.getId() + "#" + fieldDefinition.getName());
+    					if(null != fieldDescriptor){
+    						fieldDefinition.setLabel(fieldDescriptor.getLabel(null));
+    						fieldDefinition.setPlaceHolder(fieldDescriptor.getLabel(null));
+    						if (fieldDescriptor.isTarget()) {
+    							fieldDefinition.setKeyMappingParteor(fieldDescriptor.getTarget());
+							}
+    					}
+            		});
+    			}
+    		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 }

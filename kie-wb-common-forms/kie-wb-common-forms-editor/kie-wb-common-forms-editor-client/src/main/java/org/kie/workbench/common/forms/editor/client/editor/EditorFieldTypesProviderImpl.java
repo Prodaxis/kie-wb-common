@@ -57,6 +57,7 @@ public class EditorFieldTypesProviderImpl implements EditorFieldTypesProvider {
         paletteFieldTypes.add(new RadioGroupFieldType());
         paletteFieldTypes.add(new MultipleSelectorFieldType());
         paletteFieldTypes.add(new MultipleInputFieldType());
+        paletteFieldTypes.add(new SubFormFieldType()); // Add new sub form to list element dragdrop
         fieldPropertiesFieldTypes.addAll(paletteFieldTypes);
         fieldPropertiesFieldTypes.add(new SubFormFieldType());
         fieldPropertiesFieldTypes.add(new MultipleSubFormFieldType());

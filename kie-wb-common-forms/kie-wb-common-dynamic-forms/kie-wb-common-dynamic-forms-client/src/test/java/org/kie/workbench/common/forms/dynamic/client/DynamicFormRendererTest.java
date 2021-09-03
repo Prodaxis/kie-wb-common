@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.TestCase;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 @RunWith(GwtMockitoTestRunner.class)
 public class DynamicFormRendererTest extends TestCase {
 
@@ -68,6 +70,9 @@ public class DynamicFormRendererTest extends TestCase {
     @Mock
     private MapModelBindingHelper helper;
 
+    @Mock
+    private TranslationService translationService;
+    
     @Mock
     private DynamicFormModelGenerator dynamicFormModelGenerator;
 
@@ -98,7 +103,7 @@ public class DynamicFormRendererTest extends TestCase {
 
         renderer = new TestDynamicFormRenderer(view,
                                                generatorManager,
-                                               dynamicFormModelGenerator);
+                                               dynamicFormModelGenerator, translationService);
         renderer.init();
         verify(view).setPresenter(renderer);
         renderer.asWidget();

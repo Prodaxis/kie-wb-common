@@ -89,5 +89,23 @@
     "displayName" : "Milestone",
     "icon" : "defaultmilestoneicon.png",
     "category" : "Milestone"
-    ]
+    ],
+    
+    [
+	 "name" : "ParteorBusinessComponentServices",
+	 "displayName" : "Parteor Business Component Services",
+	 "category" : "parteor services",
+	 "description" : "",
+	 "defaultHandler" : "mvel: new org.jbpm.contrib.BusinessComponentWorkItemHandler()",
+	 "documentation" : "parteor-services-workitem/index.html",
+	 "parameters" : [
+        "Parameters" : new StringDataType()
+        ,"Class" : new StringDataType()
+        ,"Method" : new StringDataType()
+	  ],
+	  "results" : [
+	     "Result" : new StringDataType()
+	   ],
+	  "icon" : "defaultparteorcon.png"
+	]
 ]

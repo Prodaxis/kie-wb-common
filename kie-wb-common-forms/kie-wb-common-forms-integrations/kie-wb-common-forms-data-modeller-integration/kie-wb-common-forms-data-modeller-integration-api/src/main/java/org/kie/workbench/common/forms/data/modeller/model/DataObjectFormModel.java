@@ -22,12 +22,12 @@ import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.model.impl.AbstractFormModel;
 
 @Portable
-public class DataObjectFormModel extends AbstractFormModel implements
-                                                           JavaFormModel {
+public class DataObjectFormModel extends AbstractFormModel implements JavaFormModel {
 
     private Source source = Source.INTERNAL;
     private String className;
-
+    private String labelClassMapping;
+    
     private DataObjectFormModel() {
         // Only for serialization purposes
         source = Source.INTERNAL;
@@ -55,7 +55,15 @@ public class DataObjectFormModel extends AbstractFormModel implements
         this.source = source;
     }
 
-    @Override
+    public String getLabelClassMapping() {
+		return labelClassMapping;
+	}
+
+	public void setLabelClassMapping(String labelClassMapping) {
+		this.labelClassMapping = labelClassMapping;
+	}
+
+	@Override
     public String getType() {
         return getClassName();
     }

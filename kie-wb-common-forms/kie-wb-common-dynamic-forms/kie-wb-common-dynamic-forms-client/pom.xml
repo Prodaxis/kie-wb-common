@@ -35,6 +35,12 @@
       <artifactId>gwtbootstrap3-extras</artifactId>
     </dependency>
 
+	<dependency>
+		<groupId>org.jboss.as</groupId>
+		<artifactId>ace-gwt</artifactId>
+		<version>2.9.19.Final</version>
+	</dependency>
+
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>
@@ -182,5 +188,15 @@
       <type>test-jar</type>
     </dependency>
   </dependencies>
-
+	
+  <build>
+	<plugins>
+		<plugin>
+			<artifactId>maven-enforcer-plugin</artifactId>
+			<configuration>
+				<skip>true</skip>
+			</configuration>
+		</plugin>
+	</plugins>
+  </build>
 </project>

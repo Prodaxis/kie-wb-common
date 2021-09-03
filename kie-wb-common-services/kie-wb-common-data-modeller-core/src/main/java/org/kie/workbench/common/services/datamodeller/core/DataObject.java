@@ -21,6 +21,8 @@ import java.util.List;
 public interface DataObject extends JavaClass {
 
     List<ObjectProperty> getProperties();
+    
+    List<ObjectProperty> getStaticProperties();
 
     ObjectProperty addProperty(String name, String className);
 
@@ -29,18 +31,26 @@ public interface DataObject extends JavaClass {
     ObjectProperty addProperty(String name, String className, boolean multiple);
 
     ObjectProperty addProperty(String name, String className, boolean multiple, Visibility visibility, boolean isStatic, boolean isFinal);
+    
+    ObjectProperty addStaticProperty(String name, String className, boolean multiple, Visibility visibility, boolean isStatic, boolean isFinal, Object value);
 
     ObjectProperty addProperty(String name, String className, boolean multiple, String bag);
 
     ObjectProperty addProperty(String name, String className, boolean multiple, String bag, Visibility visibility, boolean isStatic, boolean isFinal);
 
     ObjectProperty addProperty( ObjectProperty property );
+    
+    ObjectProperty addStaticProperty( ObjectProperty property );
 
     boolean hasProperty( String name );
 
     ObjectProperty removeProperty( String name );
+    
+    ObjectProperty removeStaticProperty( String name );
 
     ObjectProperty getProperty( String name );
+    
+    ObjectProperty getStaticProperty( String name );
 
     //TODO added just for refactoring purposes, check where to move this
     ObjectProperty getUnManagedProperty( String propertyName );

@@ -100,6 +100,19 @@ public interface FormHandler<T> {
      * @param handler   The handler, it must not be null.
      */
     void addFieldChangeHandler(String fieldName, FieldChangeHandler handler);
+    
+    /**
+     * Set DynamicFieldChangeHandler that will be notified when the specified field value
+     * changes invoke others fields change. Multiple handlers can be added.
+     *
+     * @param fieldName The name of the field, if it is null the handler will be notified
+     *                  on any field change.
+     * @param handler   The handler, it must not be null.
+     */
+    public void setFieldReloadingHandler(DynamicFieldChangeHandler handler);
+    
+    void notifyFieldChange(String fieldName, Object newValue);
+    void processFieldChange(FormField formField, Object newValue);
 
     /**
      * Sets the form widgets into readOnly mode

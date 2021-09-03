@@ -38,7 +38,7 @@ public class IntegerMultipleSelectorFieldDefinition extends AbstractMultipleSele
     @FormField(
             type = MultipleInputFieldType.class,
             labelKey = "listOfValues",
-            afterElement = "allowClearSelection"
+            afterElement = "label"
     )
     private List<Long> listOfValues = new ArrayList<>();
 
@@ -54,5 +54,13 @@ public class IntegerMultipleSelectorFieldDefinition extends AbstractMultipleSele
     @Override
     public void setListOfValues(List<Long> listOfValues) {
         this.listOfValues = listOfValues;
+    }
+    
+    public List getListOfValuesSelector(){
+    	return listOfValues;
+    }
+
+    public void setListOfValuesSelector(List listOfValues){
+    	this.listOfValues = listOfValues;
     }
 }

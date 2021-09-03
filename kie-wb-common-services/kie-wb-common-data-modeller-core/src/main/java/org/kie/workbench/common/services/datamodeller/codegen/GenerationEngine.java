@@ -172,7 +172,7 @@ public class GenerationEngine {
     public void generateAttribute(GenerationContext generationContext, ObjectProperty attribute, String template) throws Exception {
         generateSubTemplate(generationContext, template);
     }
-
+    
     public void generateMethod( GenerationContext generationContext, Method method, String template) throws Exception {
         generateSubTemplate(generationContext, template);
     }
@@ -267,6 +267,12 @@ public class GenerationEngine {
         VelocityContext vc = buildContext(generationContext);
         vc.put("attr", attribute);
         return generateSubTemplateString(generationContext, "java_attribute_2");
+    }
+    
+    public String generateStaticFieldString(GenerationContext generationContext, ObjectProperty attribute, String indent) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("attr", attribute);
+        return indentLines( generateSubTemplateString(generationContext, "java_static_attribute_2"), indent );
     }
 
     public String generateFieldGetterString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
@@ -389,6 +395,12 @@ public class GenerationEngine {
         return indentLines( sb.toString(), indent );
     }
 
+    public String generateCompleteStaticFieldString(GenerationContext generationContext, ObjectProperty attribute, String indent) throws Exception {
+    	 StringBuilder sb = new StringBuilder();
+         sb.append( generateFieldString( generationContext, attribute ) );
+         return indentLines( sb.toString(), indent );
+    }
+    
     public String generateFieldGetterSetterString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
         return generateFieldGetterSetterString( generationContext, attribute, null );
     }

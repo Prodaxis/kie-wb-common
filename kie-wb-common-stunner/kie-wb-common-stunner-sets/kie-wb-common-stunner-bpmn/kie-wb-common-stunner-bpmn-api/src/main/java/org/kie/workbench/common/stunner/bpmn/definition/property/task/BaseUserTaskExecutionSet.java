@@ -64,6 +64,8 @@ public interface BaseUserTaskExecutionSet extends BPMNPropertySet {
     MultipleInstanceCompletionCondition getMultipleInstanceCompletionCondition();
 
     OnEntryAction getOnEntryAction();
+    
+    OnValidationAction getOnValidationAction();
 
     OnExitAction getOnExitAction();
 

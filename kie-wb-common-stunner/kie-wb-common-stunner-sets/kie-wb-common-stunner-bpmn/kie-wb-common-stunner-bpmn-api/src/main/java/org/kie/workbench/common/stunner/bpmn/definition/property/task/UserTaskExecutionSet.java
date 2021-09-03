@@ -209,6 +209,11 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
             settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")})
     @Valid
     private OnEntryAction onEntryAction;
+    
+    @Property
+    @FormField(type = TextAreaFieldType.class, settings = {@FieldParam(name = "rows", value = "6")}, afterElement = "onEntryAction", helpMessageKey = "helpMessage")
+    @Valid
+    private OnValidationAction onValidationAction;
 
     @Property
     @FormField(afterElement = "onEntryAction",
@@ -252,6 +257,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
              new MultipleInstanceCompletionCondition(),
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                       ""))),
+             new OnValidationAction(),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                      ""))),
              new Content(""),
@@ -279,6 +285,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                 final @MapsTo("multipleInstanceDataOutput") MultipleInstanceDataOutput multipleInstanceDataOutput,
                                 final @MapsTo("multipleInstanceCompletionCondition") MultipleInstanceCompletionCondition multipleInstanceCompletionCondition,
                                 final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
+                                final @MapsTo("onValidationAction") OnValidationAction onValidationAction,
                                 final @MapsTo("onExitAction") OnExitAction onExitAction,
                                 final @MapsTo("content") Content content,
                                 final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
@@ -303,6 +310,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.multipleInstanceDataOutput = multipleInstanceDataOutput;
         this.multipleInstanceCompletionCondition = multipleInstanceCompletionCondition;
         this.onEntryAction = onEntryAction;
+        this.onValidationAction = onValidationAction;
         this.onExitAction = onExitAction;
         this.content = content;
         this.slaDueDate = slaDueDate;
@@ -498,6 +506,15 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     }
 
     @Override
+    public OnValidationAction getOnValidationAction() {
+		return onValidationAction;
+	}
+
+	public void setOnValidationAction(OnValidationAction onValidationAction) {
+		this.onValidationAction = onValidationAction;
+	}
+
+	@Override
     public OnExitAction getOnExitAction() {
         return onExitAction;
     }
@@ -547,6 +564,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                          Objects.hashCode(multipleInstanceDataOutput),
                                          Objects.hashCode(multipleInstanceCompletionCondition),
                                          Objects.hashCode(onEntryAction),
+                                         Objects.hashCode(onValidationAction),
                                          Objects.hashCode(onExitAction),
                                          Objects.hashCode(content),
                                          Objects.hashCode(slaDueDate));
@@ -580,6 +598,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                     Objects.equals(multipleInstanceDataOutput, other.multipleInstanceDataOutput) &&
                     Objects.equals(multipleInstanceCompletionCondition, other.multipleInstanceCompletionCondition) &&
                     Objects.equals(onEntryAction, other.onEntryAction) &&
+                    Objects.equals(onValidationAction, other.onValidationAction) &&
                     Objects.equals(onExitAction, other.onExitAction) &&
                     Objects.equals(content, other.content) &&
                     Objects.equals(slaDueDate, other.slaDueDate);

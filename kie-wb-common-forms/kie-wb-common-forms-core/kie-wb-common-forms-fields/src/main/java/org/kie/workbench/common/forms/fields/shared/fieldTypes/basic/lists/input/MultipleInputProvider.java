@@ -57,6 +57,8 @@ public class MultipleInputProvider extends BasicTypeFieldProvider<AbstractMultip
 
         // Date types
         registerPropertyType(Date.class);
+        registerPropertyType(java.sql.Date.class);
+        registerPropertyType(java.sql.Timestamp.class);
         // TODO: Replace by class.getName once GWT supports the following types
         registerPropertyType("java.time.LocalDate");
         registerPropertyType("java.time.LocalDateTime");

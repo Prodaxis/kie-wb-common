@@ -73,6 +73,14 @@ public class LocalDateFieldValueMarshaller extends AbstractFieldValueMarshaller<
             if (Date.class.getName().equals(fieldDefinition.getStandaloneClassName())) {
                 return flatValue;
             }
+            
+            if(java.sql.Date.class.getName().equals(fieldDefinition.getStandaloneClassName())){
+            	return new java.sql.Date(flatValue.getTime());
+            }
+            
+            if(java.sql.Timestamp.class.getName().equals(fieldDefinition.getStandaloneClassName())){
+            	return new java.sql.Timestamp(flatValue.getTime());
+            }
 
             TimeConverter converter = converters.get(fieldDefinition.getStandaloneClassName());
 

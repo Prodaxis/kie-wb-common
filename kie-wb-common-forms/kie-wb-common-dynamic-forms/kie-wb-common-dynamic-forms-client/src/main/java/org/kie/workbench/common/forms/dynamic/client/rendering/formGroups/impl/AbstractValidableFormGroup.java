@@ -39,4 +39,9 @@ public class AbstractValidableFormGroup<VIEW extends ValidableFormGroupView> ext
     public void showWarning(String message) {
         view.setValidationMessage(message, ValidationState.WARNING);
     }
+    
+    @Override
+    public void showSuccess(String message) {
+        view.setValidationMessage(message, ValidationState.SUCCESS);
+    }
 }

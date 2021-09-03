@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.d
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.converters.ListToListConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.selector.input.MultipleSelectorInput;
+import org.kie.workbench.common.forms.dynamic.service.shared.ParteorComponentDataService;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.selector.AbstractMultipleSelectorFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.selector.MultipleSelectorFieldType;
@@ -47,27 +49,28 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
     private MultipleSelectorInput<TYPE> selector;
 
     private TranslationService translationService;
+    
+    @Inject
+    protected Caller<ParteorComponentDataService> parteorComponentDataService;
 
     private LiveSearchService<TYPE> searchService = new LiveSearchService<TYPE>() {
         @Override
         public void search(String pattern, int maxResults, LiveSearchCallback<TYPE> callback) {
-            List<TYPE> values = field.getListOfValues();
-
-            if (pattern != null && !pattern.isEmpty()) {
-                values = values.stream()
-                        .filter(value -> stringValue(value).toLowerCase().contains(pattern.toLowerCase()))
-                        .collect(Collectors.toList());
+            if(field.isAutocompletedFromDataSource()){
+                RemoteLiveSearchCallbackAdapter remoteCallback = new RemoteLiveSearchCallbackAdapter(callback, field);
+                parteorComponentDataService.call(remoteCallback, remoteCallback).findLiveSearch(field.getMethodClassMappingParteor(), field.getKeyMappingParteor(), field.getValueMappingParteor(), pattern, maxResults);
+            }else{
+                 LiveSearchResults<TYPE> entries = new LiveSearchResults<>();
+                 List<TYPE> values = field.getListOfValues();
+                 if (pattern != null && !pattern.isEmpty()) {
+                     values = values.stream().filter(value -> stringValue(value).toLowerCase().contains(pattern.toLowerCase())).collect(Collectors.toList());
+                 }
+                 for (int i = 0; i < values.size() && i < maxResults; i++) {
+                     TYPE value = values.get(i);
+                     entries.add(new LiveSearchEntry<>(value, stringValue(value)));
+                 }
+                 callback.afterSearch(entries);
             }
-
-            LiveSearchResults<TYPE> entries = new LiveSearchResults<>();
-
-            for (int i = 0; i < values.size() && i < maxResults; i++) {
-                TYPE value = values.get(i);
-                entries.add(new LiveSearchEntry<>(value,
-                                                  stringValue(value)));
-            }
-
-            callback.afterSearch(entries);
         }
 
         @Override
@@ -102,19 +105,18 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
 
         final List<TYPE> values = field.getListOfValues();
 
-        selector.init(searchService,
-                      new MultipleLiveSearchSelectionHandler<>(field.getMaxElementsOnTitle()));
+        selector.init(searchService, new MultipleLiveSearchSelectionHandler<>(field.getMaxElementsOnTitle()));
         selector.setMaxItems(field.getMaxDropdownElements());
         selector.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
         selector.setFilterEnabled(field.getAllowFilter());
         selector.setClearSelectionEnabled(field.getAllowClearSelection());
+        selector.setAllowMultiSelection(field.getAllowMultiSelection());
 
         if (renderMode.equals(RenderMode.PRETTY_MODE)) {
             selector.setEnabled(false);
         }
 
-        formGroup.render(selector.asWidget(),
-                         field);
+        formGroup.render(selector.asWidget(), field);
 
         return formGroup;
     }

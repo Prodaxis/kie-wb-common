@@ -25,5 +25,8 @@ public interface Constants extends Messages {
     public String javaResourceTypeDescription();
 
     public String newJavaFile();
-
+    
+    public String classParteorBinding();
+    
+    public String labelClassParteorBinding();
 }

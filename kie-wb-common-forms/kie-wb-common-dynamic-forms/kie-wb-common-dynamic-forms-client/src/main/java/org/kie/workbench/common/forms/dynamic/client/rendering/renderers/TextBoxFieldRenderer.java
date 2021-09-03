@@ -26,6 +26,7 @@ import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.ValidableFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxBaseDefinition;
@@ -64,7 +65,19 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition, D
 
             formGroup.render(inputId, textBox, field);
         }
-
+        if(field.getDataInitialLoaded() != null && field.isDoLoadInitialData()){
+        	Object dataInitialLoaded = field.getDataInitialLoaded();
+        	if(null != dataInitialLoaded){
+        		String dataInitialLoadedString = (String) dataInitialLoaded;
+        		if(!dataInitialLoadedString.startsWith("ERROR")){
+        			textBox.setValue(dataInitialLoadedString);
+        		}else{
+        			if (formGroup instanceof ValidableFormGroup) {
+        	            ((ValidableFormGroup) formGroup).showError(dataInitialLoadedString.replace("ERROR", ""));
+        	        }
+        		}
+        	}
+        }
         return formGroup;
     }
 

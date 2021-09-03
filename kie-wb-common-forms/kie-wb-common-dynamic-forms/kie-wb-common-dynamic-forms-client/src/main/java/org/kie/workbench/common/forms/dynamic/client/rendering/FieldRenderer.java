@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
@@ -80,8 +81,7 @@ public abstract class FieldRenderer<F extends FieldDefinition, G extends FormGro
             Map<String, Widget> formPartsWidgets = formGroup.getPartsWidgets();
             partsWidgets.putAll(formPartsWidgets);
 
-            formField = new FormFieldImpl(field,
-                                          formGroup) {
+            formField = new FormFieldImpl(field, formGroup) {
                 @Override
                 protected void doSetReadOnly(boolean readOnly) {
                     if (renderingContext.getRenderMode().equals(RenderMode.PRETTY_MODE)) {
@@ -204,4 +204,8 @@ public abstract class FieldRenderer<F extends FieldDefinition, G extends FormGro
         }
         return null;
     }
+
+	public FormRenderingContext getRenderingContext() {
+		return renderingContext;
+	}
 }

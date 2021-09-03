@@ -45,6 +45,10 @@ public class ServiceTaskPropertyWriter extends ActivityPropertyWriter {
         Scripts.setOnEntryAction(flowElement, onEntryAction);
     }
 
+    public void setExecutionTarget(String value) {
+    	CustomElement.executionTarget.of(baseElement).set(value);
+    }
+    
     public void setOnExitAction(OnExitAction onExitAction) {
         Scripts.setOnExitAction(flowElement, onExitAction);
     }

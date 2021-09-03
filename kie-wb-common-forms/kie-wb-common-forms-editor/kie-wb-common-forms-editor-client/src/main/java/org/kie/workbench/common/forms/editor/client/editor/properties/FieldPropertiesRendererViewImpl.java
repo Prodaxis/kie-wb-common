@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.properties;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -23,22 +24,29 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Modal;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
+import org.kie.workbench.common.forms.dynamic.service.shared.ParteorComponentDataService;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterLoadOKCancelButtons;
+
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.user.client.TakesValue;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
 
 @Dependent
 @Templated
@@ -55,6 +63,9 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
     @Inject
     @DataField
     private FlowPanel fieldBinding;
+    
+    @Inject
+    protected Caller<ParteorComponentDataService> parteorComponentDataService;
 
     private DynamicFormRenderer formRenderer;
 
@@ -85,9 +96,7 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
         modal = new BaseModal();
         modal.setClosable(false);
         modal.setBody(this);
-        modal.add(new ModalFooterOKCancelButtons(
-                this::maybeOk,
-                this::close));
+        modal.add(new ModalFooterLoadOKCancelButtons(this::loadFormParteor, this::maybeOk, this::close));
         modal.addHideHandler(evt -> presenter.onClose());
         formContent.add(formRenderer);
     }
@@ -115,13 +124,52 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
         return modal;
     }
 
+    private void loadFormParteor() {
+    	if (formRenderer.isValid()) {
+    		if (formRenderer.validRequireDataBindingField(true)) {
+                LoadParteorFieldConfigCallback callback = new LoadParteorFieldConfigCallback(formRenderer.getFormHandler(), translationService);
+                Collection<FormField> fields = formRenderer.getCurrentForm().getFields();
+                FormField methodClassMappingParteorField = null, keyMappingField = null, valueMappingField = null; 
+                for (FormField formField : fields) {
+                    String fieldBinding = formField.getFieldBinding();
+                    if(null != fieldBinding){
+                    	if(fieldBinding.equals("methodClassMappingParteor")){
+                    		methodClassMappingParteorField = formField;
+                        }else if(fieldBinding.equals("keyMappingParteor")){
+                            keyMappingField = formField;
+                        }else if(fieldBinding.equals("valueMappingParteor")){
+                            valueMappingField = formField;
+                        }
+                    }
+                    if(methodClassMappingParteorField != null && keyMappingField != null && valueMappingField != null){
+                        break;
+                    }
+                }
+               parteorComponentDataService.call(callback, callback).loadParteorFieldConfig(getFieldValue(methodClassMappingParteorField), getFieldValue(keyMappingField), getFieldValue(valueMappingField));
+            }
+    	}
+    }
+    
     private void maybeOk() {
         if (formRenderer.isValid()) {
-            presenter.onPressOk();
-            close();
+            if(formRenderer.validRequireDataBindingField(false)){
+                presenter.onPressOk();
+                close();
+            }
         }
     }
 
+    protected Object getFieldValue(FormField field) {
+        if (field.getWidget() instanceof HasValue) {
+            return ((HasValue) field.getWidget()).getValue();
+        } else if (field.getWidget() instanceof TakesValue) {
+            return ((TakesValue) field.getWidget()).getValue();
+        } else if (field.getWidget() instanceof HasText) {
+            return ((HasText) field.getWidget()).getText();
+        }
+        throw new IllegalStateException("Unexpected widget type: impossible to read the value");
+    }
+    
     private void close() {
         formRenderer.unBind();
         modal.hide();

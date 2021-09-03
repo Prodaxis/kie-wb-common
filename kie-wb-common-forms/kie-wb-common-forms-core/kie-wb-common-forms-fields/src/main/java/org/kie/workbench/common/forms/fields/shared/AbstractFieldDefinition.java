@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.forms.fields.shared;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
@@ -39,7 +42,29 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
             labelKey = "label"
     )
     protected String label;
+    
+    @FormField(
+    		type = TextAreaFieldType.class,
+            labelKey = "methodClassMappingParteor",
+            afterElement = "label",
+            helpMessageKey = "helpMessage.methodClassMappingParteor"
+    )
+    protected String methodClassMappingParteor;
+    
+    @FormField(
+            labelKey = "keyMappingParteor",
+            afterElement = "methodClassMappingParteor",
+            helpMessageKey = "helpMessage.keyMappingParteor"
+    )
+    protected String keyMappingParteor;
 
+    @FormField(
+            labelKey = "valueMappingParteor",
+            afterElement = "keyMappingParteor",
+            helpMessageKey = "helpMessage.valueMappingParteor"
+    )
+    protected String valueMappingParteor;
+    
     @FormField(
             labelKey = "required",
             afterElement = "label"
@@ -51,16 +76,18 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
             afterElement = "required"
     )
     protected Boolean readOnly = Boolean.FALSE;
-
+    
     @FormField(
-            afterElement = "readOnly",
-            labelKey = "validateOnChange"
+            labelKey = "checkExistValue",
+            afterElement = "valueMappingParteor"
     )
+    protected Boolean checkExistValue = Boolean.FALSE;
+    
+    @SkipFormField
     protected Boolean validateOnChange = Boolean.TRUE;
 
     @FormField(
-            type = TextAreaFieldType.class,
-            afterElement = "validateOnChange",
+            afterElement = "checkExistValue",
             labelKey = "helpMessage",
             helpMessageKey = "helpMessage.helpMessage"
     )
@@ -71,7 +98,10 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
 
     @SkipFormField
     protected String standaloneClassName;
-
+    
+    @SkipFormField
+    protected String asyncErrorKey;
+    
     public AbstractFieldDefinition(String className) {
         id = ID_PREFFIX + IDGenerator.generateRandomId();
         standaloneClassName = className;
@@ -249,4 +279,102 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
         result = ~~result;
         return result;
     }
+    
+    // <Prodaxis>
+    public String getMethodClassMappingParteor() {
+		return methodClassMappingParteor;
+	}
+
+	public void setMethodClassMappingParteor(String methodClassMappingParteor) {
+		this.methodClassMappingParteor = methodClassMappingParteor;
+	}
+	
+    public String getKeyMappingParteor() {
+       return keyMappingParteor;
+    }
+
+	public void setKeyMappingParteor(String keyMappingParteor) {
+       this.keyMappingParteor = keyMappingParteor;
+    }
+
+    public String getValueMappingParteor() {
+       return valueMappingParteor;
+    }
+
+    public void setValueMappingParteor(String valueMappingParteor) {
+      this.valueMappingParteor = valueMappingParteor;
+    }
+   
+    public Boolean isCheckValueExist() {
+        return checkExistValue;
+    }
+    
+    public Boolean getCheckExistValue() {
+		return checkExistValue;
+	}
+    
+    public Boolean isDoLoadInitialData() {
+        return false;
+    }
+
+    public void setDoLoadInitialData(Boolean checkExistValue) {
+        
+    }
+    
+    public Object getDataInitialLoaded() {
+    	return new String();
+    }
+    
+    public void setDataInitialLoaded(Object data){
+    	
+    }
+    
+    public Boolean isAutocompletedFromDataSource() {
+        return false;
+    }
+
+    public void setAutocompletedFromDataSource(Boolean autocompletedFromDataSource) {
+        
+    }
+    
+    public void setPlaceHolder(String placeHolder) {
+        
+    }
+
+    public void setCheckExistValue(Boolean checkExistValue) {
+        this.checkExistValue = checkExistValue;
+    }
+    
+    public String getAsyncErrorKey() {
+        return asyncErrorKey;
+    }
+    
+    public void setAsyncErrorKey(String asyncErrorKey){
+        this.asyncErrorKey = asyncErrorKey;
+    }
+    
+    public List getSelectorOptions(){
+    	return new ArrayList();
+    }
+
+    public void setSelectorOptions(List options){
+    	
+    }
+    
+    public List getListOfValuesSelector(){
+    	return new ArrayList();
+    }
+
+    public void setListOfValuesSelector(List listOfValues){
+    	
+    }
+    
+    public Boolean getAllowMultiSelection() {
+    	return false;
+	}
+
+	public void setAllowMultiSelection(Boolean allowMultiSelection) {
+		
+	}
+    // </Prodaxis>
 }

@@ -84,6 +84,8 @@ public class ModuleFormFinderServiceImpl implements ModuleFormFinderService {
 
     private boolean formByType(final FormDefinition formDefinition, final String typeName) {
         if (formDefinition.getModel() instanceof JavaFormModel) {
+        	if(Object.class.getName().equals(typeName))
+        		return true;
             return ((JavaFormModel) formDefinition.getModel()).getType().equals(typeName);
         }
 

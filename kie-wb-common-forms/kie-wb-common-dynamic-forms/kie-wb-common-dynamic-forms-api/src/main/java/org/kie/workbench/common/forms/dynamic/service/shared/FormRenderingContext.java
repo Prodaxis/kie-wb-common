@@ -29,6 +29,10 @@ public interface FormRenderingContext<T> {
     FormDefinition getRootForm();
 
     void setRootForm(FormDefinition rootForm);
+    
+    Map<String, Object> getNodeRenderingSettingsMetaData();
+    
+    void setNodeRenderingSettingsMetaData(Map<String, Object> nodeRenderingSettingsMetaData);
 
     void setModel(T model);
 

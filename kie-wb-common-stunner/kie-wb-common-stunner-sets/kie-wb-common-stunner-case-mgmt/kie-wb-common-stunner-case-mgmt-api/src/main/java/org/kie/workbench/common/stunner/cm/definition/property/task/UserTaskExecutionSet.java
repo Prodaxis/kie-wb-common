@@ -52,6 +52,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceExecutionMode;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnValidationAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
@@ -240,6 +241,11 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     private OnEntryAction onEntryAction;
 
     @Property
+    @FormField(type = TextAreaFieldType.class, afterElement = "onEntryAction", helpMessageKey = "helpMessage")
+    @Valid
+    private OnValidationAction onValidationAction;
+    
+    @Property
     @FormField(afterElement = "onEntryAction",
             settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")})
     @Valid
@@ -281,6 +287,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
              new MultipleInstanceCompletionCondition(),
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                       ""))),
+             new OnValidationAction(),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                      ""))),
              new Content(""),
@@ -308,6 +315,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                 final @MapsTo("multipleInstanceDataOutput") MultipleInstanceDataOutput multipleInstanceDataOutput,
                                 final @MapsTo("multipleInstanceCompletionCondition") MultipleInstanceCompletionCondition multipleInstanceCompletionCondition,
                                 final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
+                                final @MapsTo("onValidationAction") OnValidationAction onValidationAction,
                                 final @MapsTo("onExitAction") OnExitAction onExitAction,
                                 final @MapsTo("content") Content content,
                                 final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
@@ -332,6 +340,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.multipleInstanceDataOutput = multipleInstanceDataOutput;
         this.multipleInstanceCompletionCondition = multipleInstanceCompletionCondition;
         this.onEntryAction = onEntryAction;
+        this.onValidationAction = onValidationAction;
         this.onExitAction = onExitAction;
         this.content = content;
         this.slaDueDate = slaDueDate;
@@ -554,6 +563,15 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     }
 
     @Override
+	public OnValidationAction getOnValidationAction() {
+		return onValidationAction;
+	}
+    
+    public void setOnValidationAction(OnValidationAction onValidationAction) {
+		this.onValidationAction = onValidationAction;
+	}
+    
+    @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(taskName),
                                          Objects.hashCode(subject),
@@ -576,6 +594,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                          Objects.hashCode(multipleInstanceDataOutput),
                                          Objects.hashCode(multipleInstanceCompletionCondition),
                                          Objects.hashCode(onEntryAction),
+                                         Objects.hashCode(onValidationAction),
                                          Objects.hashCode(onExitAction),
                                          Objects.hashCode(content),
                                          Objects.hashCode(slaDueDate));
@@ -627,6 +646,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                    other.multipleInstanceCompletionCondition) &&
                     Objects.equals(onEntryAction,
                                    other.onEntryAction) &&
+                    Objects.equals(onValidationAction, other.onValidationAction) &&
                     Objects.equals(onExitAction,
                                    other.onExitAction) &&
                     Objects.equals(content,

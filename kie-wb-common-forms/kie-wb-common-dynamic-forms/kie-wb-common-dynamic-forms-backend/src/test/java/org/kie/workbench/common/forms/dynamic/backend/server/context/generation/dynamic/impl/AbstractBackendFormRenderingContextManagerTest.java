@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +93,7 @@ public abstract class AbstractBackendFormRenderingContextManagerTest {
 
         classLoader = mock(ClassLoader.class);
 
-        long timestamp = contextManager.registerContext(getRootForm(), formData, classLoader, getNestedForms()).getTimestamp();
+        long timestamp = contextManager.registerContext(getRootForm(), formData, new HashMap<String, Object>(), classLoader, getNestedForms()).getTimestamp();
 
         context = contextManager.getContext(timestamp);
 

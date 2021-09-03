@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition;
 
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasMaxLength;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.type.TextBoxFieldType;
@@ -33,6 +34,15 @@ public abstract class TextBoxBaseDefinition extends AbstractFieldDefinition impl
             afterElement = "label"
     )
     protected String placeHolder = "";
+    
+    @FormField(
+            labelKey = "doLoadInitialData",
+            afterElement = "valueMappingParteor"
+    )
+    private Boolean doLoadInitialData = Boolean.FALSE;
+    
+    @SkipFormField
+    private Object dataInitialLoaded;
 
     public TextBoxBaseDefinition(String className) {
         super(className);
@@ -53,6 +63,30 @@ public abstract class TextBoxBaseDefinition extends AbstractFieldDefinition impl
         this.placeHolder = placeHolder;
     }
 
+    public Boolean getDoLoadInitialData() {
+		return doLoadInitialData;
+	}
+
+	@Override
+    public Boolean isDoLoadInitialData() {
+        return doLoadInitialData;
+    }
+
+	@Override
+	public Object getDataInitialLoaded() {
+    	return dataInitialLoaded;
+    }
+    
+	@Override
+    public void setDataInitialLoaded(Object data){
+    	this.dataInitialLoaded = data;
+    }
+    
+    @Override
+    public void setDoLoadInitialData(Boolean doLoadInitialData) {
+        this.doLoadInitialData = doLoadInitialData;
+    }
+    
     @Override
     protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof HasMaxLength) {

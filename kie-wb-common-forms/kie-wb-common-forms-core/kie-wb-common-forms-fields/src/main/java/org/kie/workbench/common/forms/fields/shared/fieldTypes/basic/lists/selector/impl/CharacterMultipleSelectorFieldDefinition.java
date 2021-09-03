@@ -38,7 +38,7 @@ public class CharacterMultipleSelectorFieldDefinition extends AbstractMultipleSe
     @FormField(
             type = MultipleInputFieldType.class,
             labelKey = "listOfValues",
-            afterElement = "allowClearSelection"
+            afterElement = "label"
     )
     private List<Character> listOfValues = new ArrayList<>();
 
@@ -54,5 +54,13 @@ public class CharacterMultipleSelectorFieldDefinition extends AbstractMultipleSe
     @Override
     public void setListOfValues(List<Character> listOfValues) {
         this.listOfValues = listOfValues;
+    }
+    
+    public List getListOfValuesSelector(){
+    	return listOfValues;
+    }
+
+    public void setListOfValuesSelector(List listOfValues){
+    	this.listOfValues = listOfValues;
     }
 }

@@ -1,6 +1,7 @@
 ##
 ## Template to generate a pojo.
 ##
+#set($staticAttributes =  $nameTool.sortedStaticProperties($currentDataObject))
 #set($attributes =  $nameTool.sortedProperties($currentDataObject))
 #set($methods =  $currentDataObject.getMethods())
 #set($nestedClasses =  $currentDataObject.getNestedClasses())
@@ -29,6 +30,9 @@ public class $className #if ($nameTool.hasSuperClass($currentDataObject))$nameTo
 ##
 
     static final long serialVersionUID = 1L;
+#foreach( $staticAttr in $staticAttributes)
+$engine.generateStaticFieldString($context, $staticAttr, "    ")
+#end
 
 #foreach( $attr in $attributes)
 $engine.generateCompleteFieldString($context, $attr, "    ")

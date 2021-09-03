@@ -37,4 +37,6 @@ public interface FormModel {
      * Returns {@link ModelProperty} identified by the name parameter
      */
     ModelProperty getProperty(String name);
+    
+    public String getLabelClassMapping();
 }

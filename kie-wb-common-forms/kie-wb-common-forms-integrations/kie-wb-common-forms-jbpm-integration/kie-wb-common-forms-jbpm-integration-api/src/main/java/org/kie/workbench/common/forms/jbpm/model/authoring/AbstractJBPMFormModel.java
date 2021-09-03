@@ -43,4 +43,8 @@ public abstract class AbstractJBPMFormModel extends AbstractFormModel implements
     public void setProcessId(String processId) {
         this.processId = processId;
     }
+    
+    public String getLabelClassMapping() {
+		return null;
+	}
 }

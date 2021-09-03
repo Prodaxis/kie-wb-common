@@ -70,6 +70,10 @@ public class ServiceTaskPropertyReader extends TaskPropertyReader {
         return workItemDefinition.getName();
     }
 
+    public String getExecutionTarget(){
+    	return CustomElement.executionTarget.of(element).get();
+    }
+    
     public String getServiceTaskCategory() {
         return workItemDefinition.getCategory();
     }

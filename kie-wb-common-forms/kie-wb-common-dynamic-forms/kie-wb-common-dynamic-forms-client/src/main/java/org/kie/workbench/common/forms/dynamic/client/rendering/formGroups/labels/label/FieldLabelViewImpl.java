@@ -19,7 +19,6 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.label
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -27,11 +26,17 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.help.FieldHelp;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.required.FieldRequired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Templated
 public class FieldLabelViewImpl implements IsElement,
                                            FieldLabelView {
-
+	
+	private static final Logger log = LoggerFactory.getLogger(FieldLabelViewImpl.class);
+	
     private Presenter presenter;
 
     private boolean required;
@@ -81,8 +86,11 @@ public class FieldLabelViewImpl implements IsElement,
 
         init();
 
-        DOMUtil.appendWidgetToElement(getElement(),
-                                      isWidget);
+		try {
+			DOMUtil.appendWidgetToElement(getElement(), isWidget);
+		} catch (AssertionError e) {
+			log.error(e.getMessage());
+		}
 
         getElement().appendChild(labelText);
 

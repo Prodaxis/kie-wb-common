@@ -42,6 +42,9 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DataModelerService {
 
+	public static String PARTEOR_CLASS_BINDING_KEY = "CLASS_PARTEOR_BINDING";
+	public static String LABEL_MAPPING_CLASS_PARTEOR_KEY = "LABEL_MAPPING_CLASS_PARTEOR";
+	
     Path createJavaFile(final Path context,
                         final String fileName,
                         final String comment);

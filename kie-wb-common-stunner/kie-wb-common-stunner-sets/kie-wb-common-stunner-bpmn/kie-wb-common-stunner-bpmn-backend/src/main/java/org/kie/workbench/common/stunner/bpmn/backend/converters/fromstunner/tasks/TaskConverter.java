@@ -121,6 +121,7 @@ public class TaskConverter {
         p.setTaskName(executionSet.getTaskName().getValue());
         p.setAsync(executionSet.getIsAsync().getValue());
         p.setOnEntryAction(executionSet.getOnEntryAction());
+        p.setExecutionTarget(executionSet.getExecutionTarget().getValue());
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
         p.setSlaDueDate(executionSet.getSlaDueDate().getValue());
@@ -167,6 +168,7 @@ public class TaskConverter {
             p.setCompletionCondition(executionSet.getMultipleInstanceCompletionCondition().getValue());
         }
         p.setOnEntryAction(executionSet.getOnEntryAction());
+        p.setOnValidationAction(executionSet.getOnValidationAction().getValue());
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setContent(executionSet.getContent().getValue());
         p.setSLADueDate(executionSet.getSlaDueDate().getValue());

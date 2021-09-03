@@ -46,6 +46,7 @@ import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerRenameHelper;
@@ -72,6 +73,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.FilterHolder;
@@ -217,13 +219,23 @@ public class DataModelerServiceImpl
 
             DataObject dataObject = new DataObjectImpl(packageName,
                                                        className);
-
+            
             Iterator<DomainHandler> it = domainHandlers != null ? domainHandlers.iterator() : null;
             while (it != null && it.hasNext()) {
-                it.next().setDefaultValues(dataObject,
-                                           options);
+                it.next().setDefaultValues(dataObject, options);
             }
-
+            
+            if(null != options){
+            	if(options.containsKey(DataModelerService.PARTEOR_CLASS_BINDING_KEY)){
+            		String parteorSuperClass = (String) options.get(PARTEOR_CLASS_BINDING_KEY);
+                	dataObject.setSuperClassName(parteorSuperClass);
+            	}
+            	if(options.containsKey(DataModelerService.LABEL_MAPPING_CLASS_PARTEOR_KEY)){
+            		String labelMappingClassParteor = (String) options.get(LABEL_MAPPING_CLASS_PARTEOR_KEY);
+            		dataObject.addStaticProperty(ModelField.LABEL_MAPPING_CLASS_KEY, String.class.getName(), false, Visibility.PUBLIC, true, true, labelMappingClassParteor);
+            	}
+            }
+            
             String source = createJavaSource(dataObject);
 
             ioService.write(nioPath,

@@ -38,7 +38,7 @@ public class StringMultipleSelectorFieldDefinition extends AbstractMultipleSelec
     @FormField(
             type = MultipleInputFieldType.class,
             labelKey = "listOfValues",
-            afterElement = "allowClearSelection"
+            afterElement = "label"
     )
     private List<String> listOfValues = new ArrayList<>();
 
@@ -54,5 +54,13 @@ public class StringMultipleSelectorFieldDefinition extends AbstractMultipleSelec
     @Override
     public void setListOfValues(List<String> listOfValues) {
         this.listOfValues = listOfValues;
+    }
+    
+    public List getListOfValuesSelector(){
+    	return listOfValues;
+    }
+
+    public void setListOfValuesSelector(List listOfValues){
+    	this.listOfValues = listOfValues;
     }
 }

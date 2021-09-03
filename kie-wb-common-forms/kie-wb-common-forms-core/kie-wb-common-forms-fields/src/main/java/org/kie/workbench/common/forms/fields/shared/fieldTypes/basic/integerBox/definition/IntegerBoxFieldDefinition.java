@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasMaxLength;
@@ -52,6 +53,15 @@ public class IntegerBoxFieldDefinition extends AbstractFieldDefinition implement
     )
     @Min(1)
     protected Integer maxLength = 100;
+    
+    @FormField(
+            labelKey = "doLoadInitialData",
+            afterElement = "valueMappingParteor"
+    )
+    private Boolean doLoadInitialData = Boolean.FALSE;
+    
+    @SkipFormField
+    private Object dataInitialLoaded;
 
     public IntegerBoxFieldDefinition() {
         super(Integer.class.getName());
@@ -82,6 +92,30 @@ public class IntegerBoxFieldDefinition extends AbstractFieldDefinition implement
         this.maxLength = maxLength;
     }
 
+    public Boolean getDoLoadInitialData() {
+		return doLoadInitialData;
+	}
+
+	@Override
+    public Boolean isDoLoadInitialData() {
+        return doLoadInitialData;
+    }
+
+	@Override
+	public Object getDataInitialLoaded() {
+    	return dataInitialLoaded;
+    }
+    
+	@Override
+    public void setDataInitialLoaded(Object data){
+    	this.dataInitialLoaded = data;
+    }
+    
+    @Override
+    public void setDoLoadInitialData(Boolean doLoadInitialData) {
+        this.doLoadInitialData = doLoadInitialData;
+    }
+    
     @Override
     protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof HasMaxLength) {

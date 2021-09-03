@@ -22,11 +22,11 @@ import java.util.List;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.Visibility;
-import org.uberfire.backend.vfs.Path;
 
 public class DataObjectImpl extends JavaClassImpl implements DataObject {
 
     private List<ObjectProperty> properties = new ArrayList<ObjectProperty>();
+    private List<ObjectProperty> staticProperties = new ArrayList<ObjectProperty>();
 
     public DataObjectImpl() {
 
@@ -43,6 +43,11 @@ public class DataObjectImpl extends JavaClassImpl implements DataObject {
     @Override
     public List<ObjectProperty> getProperties() {
         return properties;
+    }
+    
+    @Override
+    public List<ObjectProperty> getStaticProperties() {
+        return staticProperties;
     }
 
     @Override
@@ -71,6 +76,13 @@ public class DataObjectImpl extends JavaClassImpl implements DataObject {
     }
 
     @Override
+    public ObjectProperty addStaticProperty(String name, String className, boolean multiple, Visibility visibility, boolean isStatic, boolean isFinal, Object value) {
+    	ObjectPropertyImpl objectPropertyImpl = new ObjectPropertyImpl( name, className, multiple, visibility, isStatic, isFinal );
+    	objectPropertyImpl.setValue(value);
+    	return addStaticProperty(objectPropertyImpl);
+    }
+    
+    @Override
     public ObjectProperty addProperty( String name, String className, boolean multiple, String bag, Visibility visibility, boolean isStatic, boolean isFinal ) {
         ObjectProperty property = new ObjectPropertyImpl( name, className, multiple, bag, visibility, isStatic, isFinal );
         return addProperty( property );
@@ -85,6 +97,16 @@ public class DataObjectImpl extends JavaClassImpl implements DataObject {
         properties.add( property );
         return property;
     }
+    
+    @Override
+    public ObjectProperty addStaticProperty( ObjectProperty property ) {
+        if ( property == null ) {
+            return null;
+        }
+        removeStaticProperty( property.getName() );
+        staticProperties.add( property );
+        return property;
+    }
 
     @Override
     public ObjectProperty removeProperty( String name ) {
@@ -94,9 +116,27 @@ public class DataObjectImpl extends JavaClassImpl implements DataObject {
     }
 
     @Override
+    public ObjectProperty removeStaticProperty( String name ){
+        ObjectProperty removedProperty = getStaticProperty( name );
+        if ( removedProperty != null ) staticProperties.remove( removedProperty );
+        return removedProperty;
+    }
+    
+    @Override
     public ObjectProperty getProperty( String name ) {
         if ( name == null ) return null;
         for ( ObjectProperty property : properties ) {
+            if ( name.equals( property.getName() ) ) {
+                return property;
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    public ObjectProperty getStaticProperty( String name ) {
+        if ( name == null ) return null;
+        for ( ObjectProperty property : staticProperties ) {
             if ( name.equals( property.getName() ) ) {
                 return property;
             }

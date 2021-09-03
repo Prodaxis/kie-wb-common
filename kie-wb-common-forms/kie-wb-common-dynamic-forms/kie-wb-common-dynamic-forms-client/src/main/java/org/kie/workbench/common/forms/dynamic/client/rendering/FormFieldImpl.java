@@ -57,6 +57,16 @@ public abstract class FormFieldImpl<F extends FieldDefinition> implements FormFi
     }
 
     @Override
+    public String getMethodClassMappingParteor() {
+    	return field.getMethodClassMappingParteor();
+    }
+    
+    @Override
+    public String getKeyMappingParteor() {
+        return field.getKeyMappingParteor();
+    }
+    
+    @Override
     public boolean isValidateOnChange() {
         return field.getValidateOnChange();
     }
@@ -79,6 +89,16 @@ public abstract class FormFieldImpl<F extends FieldDefinition> implements FormFi
     }
 
     @Override
+    public void setLabel(String label){
+        field.setLabel(label);
+    }
+    
+    @Override
+    public void setPlaceHolder(String placeHolder){
+    	field.setPlaceHolder(placeHolder);
+    }
+    
+    @Override
     public FieldContainer getContainer() {
         return formGroup;
     }
@@ -87,9 +107,48 @@ public abstract class FormFieldImpl<F extends FieldDefinition> implements FormFi
     public boolean isRequired() {
         return field.getRequired();
     }
+    
+    @Override
+    public boolean isCheckValueExist() {
+        return field.isCheckValueExist();
+    }
+    
+    @Override
+    public boolean isDoLoadInitialData(){
+        return field.isDoLoadInitialData();
+    }
 
+    @Override
+    public boolean isAutocompletedFromDataSource(){
+        return field.isAutocompletedFromDataSource();
+    }
+    
+    public List getSelectorOptions(){
+    	return field.getSelectorOptions();
+    }
+
+    public void setSelectorOptions(List options){
+    	field.setSelectorOptions(options);
+    }
+    
+    public List getListOfValuesSelector(){
+    	return field.getListOfValuesSelector();
+    }
+
+    public void setListOfValuesSelector(List listOfValues){
+    	field.setListOfValuesSelector(listOfValues);
+    }
+    
     protected abstract void doSetReadOnly(boolean readOnly);
 
+    public String getAsyncErrorKey() {
+        return field.getAsyncErrorKey();
+    }
+    
+    public void setAsyncErrorKey(String asyncErrorKey) {
+        field.setAsyncErrorKey(asyncErrorKey);
+    }
+    
     @Override
     public void clearError() {
         if (formGroup instanceof ValidableFormGroup) {
@@ -110,6 +169,13 @@ public abstract class FormFieldImpl<F extends FieldDefinition> implements FormFi
             ((ValidableFormGroup) formGroup).showWarning(warning);
         }
     }
+    
+    @Override
+    public void showSuccess(String success) {
+        if (formGroup instanceof ValidableFormGroup) {
+            ((ValidableFormGroup) formGroup).showSuccess(success);
+        }
+    }
 
     @Override
     public IsWidget getWidget() {
@@ -120,4 +186,10 @@ public abstract class FormFieldImpl<F extends FieldDefinition> implements FormFi
     public List<CustomFieldValidator> getCustomValidators() {
         return customValidators;
     }
+
+	@Override
+	public Object getFieldDefinition() {
+		return field;
+	}
+    
 }

@@ -128,4 +128,8 @@ public class MultipleSelectorInput<TYPE> implements IsWidget,
     public void setClearSelectionEnabled(Boolean allowClearSelection) {
         selector.setClearSelectionEnabled(allowClearSelection);
     }
+    
+    public void setAllowMultiSelection(Boolean allowMultiSelection) {
+    	selectionHandler.setAllowMultiSelection(allowMultiSelection);
+    }
 }

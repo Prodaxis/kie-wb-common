@@ -39,7 +39,7 @@ public class DateMultipleSelectorFieldDefinition extends AbstractMultipleSelecto
     @FormField(
             type = MultipleInputFieldType.class,
             labelKey = "listOfValues",
-            afterElement = "allowClearSelection"
+            afterElement = "label"
     )
     private List<Date> listOfValues = new ArrayList<>();
 
@@ -55,5 +55,13 @@ public class DateMultipleSelectorFieldDefinition extends AbstractMultipleSelecto
     @Override
     public void setListOfValues(List<Date> listOfValues) {
         this.listOfValues = listOfValues;
+    }
+    
+    public List getListOfValuesSelector(){
+    	return listOfValues;
+    }
+
+    public void setListOfValuesSelector(List listOfValues){
+    	this.listOfValues = listOfValues;
     }
 }

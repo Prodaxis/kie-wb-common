@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling;
 
+import java.util.HashMap;
+
 public interface FieldChangeHandlerManager {
 
     void registerField(FormField formField);
 
     void addFieldChangeHandler(FieldChangeHandler changeHandler);
+    
+    void setFieldReloadingHandler(DynamicFieldChangeHandler changeHandler);
 
     void addFieldChangeHandler(String fieldName,
                                FieldChangeHandler changeHandler);
@@ -31,6 +35,8 @@ public interface FieldChangeHandlerManager {
 
     void notifyFieldChange(String fieldName,
                            Object newValue);
+    
+    public void notifyFieldReLoading(FormHandler formHandler, FormField field, HashMap formData);
 
     void clear();
 

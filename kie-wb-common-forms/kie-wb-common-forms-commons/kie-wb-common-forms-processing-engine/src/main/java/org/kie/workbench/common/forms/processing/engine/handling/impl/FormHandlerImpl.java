@@ -17,12 +17,12 @@
 package org.kie.workbench.common.forms.processing.engine.handling.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.BindableProxyFactory;
@@ -30,6 +30,7 @@ import org.jboss.errai.databinding.client.PropertyChangeUnsubscribeHandle;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.api.StateSync;
+import org.kie.workbench.common.forms.processing.engine.handling.DynamicFieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
 import org.kie.workbench.common.forms.processing.engine.handling.Form;
@@ -38,6 +39,10 @@ import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
 import org.kie.workbench.common.forms.processing.engine.handling.NeedsFlush;
+
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.ui.IsWidget;
 
 public class FormHandlerImpl<T> implements FormHandler<T> {
 
@@ -48,6 +53,8 @@ public class FormHandlerImpl<T> implements FormHandler<T> {
     protected DataBinder<T> binder;
 
     protected List<PropertyChangeUnsubscribeHandle> unsubscribeHandlers = new ArrayList<>();
+    
+    protected HashMap<String, List<FormField>> dynamicVariableFieldLoadMapping = new HashMap<>();
 
     protected Form form;
 
@@ -82,8 +89,7 @@ public class FormHandlerImpl<T> implements FormHandler<T> {
 
     @Override
     public void registerInput(FormField formField) {
-        registerInput(formField,
-                      null);
+        registerInput(formField, null);
     }
 
     @Override
@@ -95,6 +101,22 @@ public class FormHandlerImpl<T> implements FormHandler<T> {
         IsWidget widget = formField.getWidget();
 
         form.addField(formField);
+        
+        if(formField.getMethodClassMappingParteor() != null && !"".equals(formField.getMethodClassMappingParteor())){
+        	ArrayList<String> keys = extractVariable(formField.getMethodClassMappingParteor());
+        	if(keys != null && !keys.isEmpty()){
+        		for (String key : keys) {
+        			if(dynamicVariableFieldLoadMapping.containsKey(key)){
+        				List fields = dynamicVariableFieldLoadMapping.get(key);
+        				fields.add(formField);
+        			}else{
+        				List fields = new ArrayList<>();
+        				fields.add(formField);
+        				dynamicVariableFieldLoadMapping.put(key, fields);
+        			}
+				}
+        	}
+        }
 
         if (formField.isBindable()) {
 
@@ -133,37 +155,44 @@ public class FormHandlerImpl<T> implements FormHandler<T> {
         }
     }
 
-    protected void notifyFieldChange(String fieldName, Object newValue) {
+    public void notifyFieldChange(String fieldName, Object newValue) {
         fieldChangeManager.notifyFieldChange(fieldName, newValue);
     }
 
-    protected void processFieldChange(FormField formField, Object newValue) {
+    public void processFieldChange(FormField formField, Object newValue) {
         if (enabledOnChangeValidations) {
             fieldChangeManager.processFieldChange(formField.getFieldName(), newValue, getModel());
         } else {
             notifyFieldChange(formField.getFieldName(), newValue);
         }
+        makeFieldDynamicChange(formField, newValue);
     }
 
-    protected Object readPropertyValue(BindableProxy proxy,
-                                       String fieldBinding) {
-        if (fieldBinding.indexOf(".") != -1) {
-            // Nested property
-
-            int separatorPosition = fieldBinding.indexOf(".");
-            String nestedModelName = fieldBinding.substring(0,
-                                                            separatorPosition);
-            String property = fieldBinding.substring(separatorPosition + 1);
-            Object nestedModel = proxy.get(nestedModelName);
-            if (nestedModel == null) {
-                return null;
-            }
-
-            return readPropertyValue((BindableProxy) BindableProxyFactory.getBindableProxy(nestedModel),
-                                     property);
+    protected void makeFieldDynamicChange(FormField formField, Object newValue){
+    	if(dynamicVariableFieldLoadMapping.containsKey(formField.getFieldBinding())){
+    		HashMap formData = new HashMap<>();
+			formData.put(formField.getFieldBinding(), newValue);
+    		List<FormField> fieldChanges = dynamicVariableFieldLoadMapping.get(formField.getFieldBinding());
+    		for (FormField fieldReload : fieldChanges) {
+    			fieldChangeManager.notifyFieldReLoading(this, fieldReload, formData);
+			}
         }
-        return proxy.get(fieldBinding);
     }
+    
+    protected Object readPropertyValue(BindableProxy proxy, String fieldBinding) {
+		if (fieldBinding.indexOf(".") != -1) {
+			// Nested property
+			int separatorPosition = fieldBinding.indexOf(".");
+			String nestedModelName = fieldBinding.substring(0, separatorPosition);
+			String property = fieldBinding.substring(separatorPosition + 1);
+			Object nestedModel = proxy.get(nestedModelName);
+			if (nestedModel == null) {
+				return null;
+			}
+			return readPropertyValue((BindableProxy) BindableProxyFactory.getBindableProxy(nestedModel),property);
+		}
+		return proxy.get(fieldBinding);
+}
 
     public void addFieldChangeHandler(FieldChangeHandler handler) {
         addFieldChangeHandler(null,
@@ -181,6 +210,10 @@ public class FormHandlerImpl<T> implements FormHandler<T> {
         } else {
             fieldChangeManager.addFieldChangeHandler(handler);
         }
+    }
+    
+    public void setFieldReloadingHandler(DynamicFieldChangeHandler handler) {
+    	fieldChangeManager.setFieldReloadingHandler(handler);
     }
 
     @Override
@@ -277,5 +310,26 @@ public class FormHandlerImpl<T> implements FormHandler<T> {
         }
 
         return null;
+    }
+    
+    public ArrayList<String> extractVariable(String loadingMethodScript) {
+    	ArrayList<String> keys = new ArrayList<>();
+    	RegExp regExp = RegExp.compile("\\$([a-zA-Z]|[a-z/A-Z]|[{a-z/A-Z}]|[a-z.A-Z])+");
+    	MatchResult matcher = regExp.exec(loadingMethodScript);
+    	boolean matchFound = matcher != null;
+    	if (matchFound) {
+    		for (int i = 0; i < matcher.getGroupCount(); i++) {
+    	        String group = matcher.getGroup(i);
+    	        if(group.contains("$")){
+    	        	group = group.replace("$", "");
+        			group = group.replace("{", "");
+        			group = group.replace("}", "");
+        			if(!keys.contains(group)){
+        				keys.add(group);
+        			}
+    	        }
+    	    }
+    	}
+    	return keys;
     }
 }

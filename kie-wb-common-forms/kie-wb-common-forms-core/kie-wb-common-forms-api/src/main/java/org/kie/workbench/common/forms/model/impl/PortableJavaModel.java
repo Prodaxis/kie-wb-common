@@ -38,4 +38,8 @@ public class PortableJavaModel extends AbstractFormModel implements JavaFormMode
     public void setType(String type) {
         this.type = type;
     }
+    
+    public String getLabelClassMapping() {
+		return null;
+	}
 }

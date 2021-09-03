@@ -153,10 +153,7 @@ public class FieldPropertiesRenderer implements IsWidget {
         FormModel roodFormModel = helper.getCurrentRenderingContext().getRootForm().getModel();
         final DataBindingEditor editor = roodFormModel instanceof DynamicModel ? dynamicDataBindingEditor : staticDataBindingEditor;
 
-        editor.init(fieldCopy,
-                    this::getAvailableBindings,
-                    this::onFieldBindingChange);
-
+        editor.init(fieldCopy, this::getAvailableBindings, this::onFieldBindingChange);
         view.render(helper,
                     context,
                     editor);
@@ -164,7 +161,6 @@ public class FieldPropertiesRenderer implements IsWidget {
 
     private Collection<String> getAvailableBindings() {
         Collection result = helper.getAvailableModelFields(fieldCopy);
-
         if (originalField.getBinding() != null && !originalField.getBinding().isEmpty()) {
             result.add(originalField.getBinding());
         }

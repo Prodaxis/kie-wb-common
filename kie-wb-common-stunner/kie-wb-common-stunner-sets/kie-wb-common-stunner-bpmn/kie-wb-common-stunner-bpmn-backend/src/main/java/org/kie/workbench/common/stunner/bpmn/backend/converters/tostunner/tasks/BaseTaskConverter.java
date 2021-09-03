@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.service.Generic
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ExecutionTarget;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.EmptyTaskExecutionSet;
@@ -135,6 +136,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                             new IsAsync(p.isAsync()),
                             new AdHocAutostart(p.isAdHocAutoStart()),
                             new OnEntryAction(p.getOnEntryAction()),
+                            new ExecutionTarget(p.getExecutionTarget()),
                             new OnExitAction(p.getOnExitAction()),
                             new SLADueDate(p.getSlaDueDate())
         ));

@@ -1,0 +1,1 @@
+public static final $nameTool.resolveAttributeType( $attr) $nameTool.toJavaVar( $attr.name )$nameTool.toValueVar( $attr.value );

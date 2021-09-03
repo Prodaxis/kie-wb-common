@@ -17,6 +17,7 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors;
 
 import java.util.List;
 
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -25,7 +26,12 @@ import org.kie.workbench.common.forms.model.RefreshOnFieldChange;
 
 public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption<TYPE>, TYPE> extends AbstractFieldDefinition implements HasDefaultValue<TYPE>,
                                                                                                                                         RefreshOnFieldChange {
-
+    @FormField(
+            labelKey = "doLoadInitialData",
+            afterElement = "checkExistValue"
+    )
+    private Boolean doLoadInitialData = Boolean.FALSE;
+   
     @SkipFormField
     protected String dataProvider = "";
 
@@ -40,6 +46,16 @@ public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption<
 
     public abstract void setOptions(List<OPTION> options);
 
+    @Override
+    public Boolean isDoLoadInitialData() {
+        return doLoadInitialData;
+    }
+
+    @Override
+    public void setDoLoadInitialData(Boolean doLoadInitialData) {
+        this.doLoadInitialData = doLoadInitialData;
+    }
+    
     public String getDataProvider() {
         return dataProvider;
     }
@@ -58,7 +74,11 @@ public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption<
         this.relatedField = relatedField;
     }
 
-    protected void doCopyFrom(FieldDefinition other) {
+    public Boolean getDoLoadInitialData() {
+		return doLoadInitialData;
+	}
+
+	protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof SelectorFieldBaseDefinition) {
             if ((standaloneClassName == null && other.getStandaloneClassName() == null) ||
                     (standaloneClassName != null && standaloneClassName.equals(other.getStandaloneClassName()))) {

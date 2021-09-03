@@ -112,4 +112,8 @@ public class UserTaskPropertyReader extends MultipleInstanceActivityPropertyRead
     public String getSLADueDate() {
         return CustomElement.slaDueDate.of(element).get();
     }
+    
+    public String getOnValidationAction(){
+    	return CustomElement.onValidationAction.of(element).get();
+    }
 }

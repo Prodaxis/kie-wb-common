@@ -57,6 +57,8 @@ public class MultipleSelectorProvider extends BasicTypeFieldProvider<AbstractMul
 
         // Date types
         registerPropertyType(Date.class);
+        registerPropertyType(java.sql.Date.class);
+        registerPropertyType(java.sql.Timestamp.class);
         // TODO: Replace by class.getName once GWT supports the following types
         registerPropertyType("java.time.LocalDate");
         registerPropertyType("java.time.LocalDateTime");
@@ -71,39 +73,36 @@ public class MultipleSelectorProvider extends BasicTypeFieldProvider<AbstractMul
 
     @Override
     public AbstractMultipleSelectorFieldDefinition createFieldByType(TypeInfo typeInfo) {
-
-        if (typeInfo.isMultiple()) {
-            if (typeInfo.getClassName().equals(Object.class.getName())) {
-                return new StringMultipleSelectorFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(String.class.getName())) {
-                return new StringMultipleSelectorFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(Boolean.class.getName())) {
-                return new BooleanMultipleSelectorFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(Character.class.getName())) {
-                return new CharacterMultipleSelectorFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(BigInteger.class.getName()) ||
-                    typeInfo.getClassName().equals(Byte.class.getName()) ||
-                    typeInfo.getClassName().equals(Integer.class.getName()) ||
-                    typeInfo.getClassName().equals(Long.class.getName()) ||
-                    typeInfo.getClassName().equals(Short.class.getName())) {
-                return new IntegerMultipleSelectorFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(BigDecimal.class.getName()) ||
-                    typeInfo.getClassName().equals(Double.class.getName()) ||
-                    typeInfo.getClassName().equals(Float.class.getName())) {
-                return new DecimalMultipleSelectorFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(Date.class.getName()) ||
-                    typeInfo.getClassName().equals("java.time.LocalDate") ||
-                    typeInfo.getClassName().equals("java.time.LocalDateTime") ||
-                    typeInfo.getClassName().equals("java.time.LocalTime") ||
-                    typeInfo.getClassName().equals("java.time.OffsetDateTime")) {
-                return new DateMultipleSelectorFieldDefinition();
-            }
+        if (typeInfo.getClassName().equals(Object.class.getName())) {
+            return new StringMultipleSelectorFieldDefinition();
+        }
+        if (typeInfo.getClassName().equals(String.class.getName())) {
+            return new StringMultipleSelectorFieldDefinition();
+        }
+        if (typeInfo.getClassName().equals(Boolean.class.getName())) {
+            return new BooleanMultipleSelectorFieldDefinition();
+        }
+        if (typeInfo.getClassName().equals(Character.class.getName())) {
+            return new CharacterMultipleSelectorFieldDefinition();
+        }
+        if (typeInfo.getClassName().equals(BigInteger.class.getName()) ||
+                typeInfo.getClassName().equals(Byte.class.getName()) ||
+                typeInfo.getClassName().equals(Integer.class.getName()) ||
+                typeInfo.getClassName().equals(Long.class.getName()) ||
+                typeInfo.getClassName().equals(Short.class.getName())) {
+            return new IntegerMultipleSelectorFieldDefinition();
+        }
+        if (typeInfo.getClassName().equals(BigDecimal.class.getName()) ||
+                typeInfo.getClassName().equals(Double.class.getName()) ||
+                typeInfo.getClassName().equals(Float.class.getName())) {
+            return new DecimalMultipleSelectorFieldDefinition();
+        }
+        if (typeInfo.getClassName().equals(Date.class.getName()) ||
+                typeInfo.getClassName().equals("java.time.LocalDate") ||
+                typeInfo.getClassName().equals("java.time.LocalDateTime") ||
+                typeInfo.getClassName().equals("java.time.LocalTime") ||
+                typeInfo.getClassName().equals("java.time.OffsetDateTime")) {
+            return new DateMultipleSelectorFieldDefinition();
         }
         return null;
     }
@@ -125,6 +124,6 @@ public class MultipleSelectorProvider extends BasicTypeFieldProvider<AbstractMul
 
     @Override
     public boolean isSupported(TypeInfo typeInfo) {
-        return typeInfo.isMultiple() && super.isSupported(typeInfo);
+    	return super.isSupported(typeInfo);
     }
 }

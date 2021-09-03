@@ -226,21 +226,16 @@ public abstract class AbstractFieldManager implements FieldManager {
             }
 
             Set result = new TreeSet();
-
-            if(fieldDefinition.getFieldTypeInfo().isMultiple()) {
-                for (BasicTypeFieldProvider provider : basicMultipleProviders) {
-                    if (provider.isCompatible(fieldDefinition)) {
-                        result.add(provider.getFieldTypeName());
-                    }
-                }
-            } else {
-                for (BasicTypeFieldProvider provider : basicProviders) {
-                    if (provider.isCompatible(fieldDefinition)) {
-                        result.add(provider.getFieldTypeName());
-                    }
+            for (BasicTypeFieldProvider provider : basicMultipleProviders) {
+                if (provider.isCompatible(fieldDefinition)) {
+                    result.add(provider.getFieldTypeName());
                 }
             }
-
+            for (BasicTypeFieldProvider provider : basicProviders) {
+                if (provider.isCompatible(fieldDefinition)) {
+                    result.add(provider.getFieldTypeName());
+                }
+            }
             return result;
         } else {
             if (fieldDefinition instanceof EntityRelationField) {

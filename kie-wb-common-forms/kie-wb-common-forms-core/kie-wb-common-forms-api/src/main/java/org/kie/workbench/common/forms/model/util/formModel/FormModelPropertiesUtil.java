@@ -50,6 +50,8 @@ public class FormModelPropertiesUtil {
         simplePropertyTypes.add(BigDecimal.class.getName());
         simplePropertyTypes.add(BigInteger.class.getName());
         simplePropertyTypes.add(Date.class.getName());
+        simplePropertyTypes.add(java.sql.Date.class.getName());
+        simplePropertyTypes.add(java.sql.Timestamp.class.getName());
         simplePropertyTypes.add(Boolean.class.getName());
         simplePropertyTypes.add(Character.class.getName());
 

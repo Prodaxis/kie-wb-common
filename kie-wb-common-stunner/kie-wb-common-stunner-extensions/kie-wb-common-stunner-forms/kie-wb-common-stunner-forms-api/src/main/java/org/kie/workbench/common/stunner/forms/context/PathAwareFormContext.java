@@ -104,4 +104,12 @@ public class PathAwareFormContext<T> implements FormRenderingContext<T>,
     public Path getPath() {
         return path;
     }
+    
+    public Map<String, Object> getNodeRenderingSettingsMetaData() {
+		return null;
+	}
+    
+    public void setNodeRenderingSettingsMetaData(Map<String, Object> nodeRenderingSettingsMetaData) {
+    	
+    }
 }

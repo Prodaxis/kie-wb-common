@@ -81,6 +81,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrder
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ExecutionTarget;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Content;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
@@ -99,6 +100,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnValidationAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
@@ -1479,12 +1481,14 @@ public class HashCodeAndEqualityTest {
                                                          new IsAsync(),
                                                          new AdHocAutostart(),
                                                          new OnEntryAction(),
+                                                         new ExecutionTarget(),
                                                          new OnExitAction(),
                                                          new SLADueDate()),
                              new ServiceTaskExecutionSet(new TaskName(),
                                                          new IsAsync(),
                                                          new AdHocAutostart(),
                                                          new OnEntryAction(),
+                                                         new ExecutionTarget(),
                                                          new OnExitAction(),
                                                          new SLADueDate()))
                 .test();
@@ -1566,6 +1570,7 @@ public class HashCodeAndEqualityTest {
                                                       new MultipleInstanceDataOutput(),
                                                       new MultipleInstanceCompletionCondition(),
                                                       new OnEntryAction(),
+                                                      new OnValidationAction(),
                                                       new OnExitAction(),
                                                       new Content(),
                                                       new SLADueDate()),
@@ -1591,6 +1596,7 @@ public class HashCodeAndEqualityTest {
                                                       new MultipleInstanceDataOutput(),
                                                       new MultipleInstanceCompletionCondition(),
                                                       new OnEntryAction(),
+                                                      new OnValidationAction(),
                                                       new OnExitAction(),
                                                       new Content(),
                                                       new SLADueDate()))
